@@ -356,7 +356,7 @@
         }
         .atividade-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem; }
         .atividade-icon { font-size: 2rem; margin-right: 1rem; }
-        .atividade-numero { font-family: var(--font-titulo); font-size: 2.5rem; color: var(--cor-roxo-livro); opacity: 0.5; }
+        .atividade-numero { font-family: var(--font-titulo); font-size: 2.5rem; color: var(--cor-texto-claro); opacity: 0.5; }
         .atividade-titulo { font-size: 1.1rem; font-weight: 700; color: var(--cor-texto-claro); margin-bottom: 0.5rem; line-height: 1.2; }
         .atividade-tipo { background: var(--cor-roxo-livro); color: white; padding: 0.2rem 0.6rem; border-radius: 10px; font-size: 0.7rem; font-weight: 700; margin-bottom: 0.8rem; display: inline-block; }
         .atividade-descricao { color: var(--cor-texto-secundario); font-family: var(--font-texto); font-size: 0.8rem; line-height: 1.4; flex-grow: 1; margin-bottom: 1rem; }
@@ -586,14 +586,14 @@
                         </div>
                         <div class="atividade-footer">BNCC: EF69LP23</div>
                     </div>
-                    <div class="atividade-card" onclick="abrirModalAtividade('novo-morador')" tabindex="0">
+                    <div class="atividade-card" onclick="abrirModalAtividade('comparacao')" tabindex="0">
                         <div>
-                            <div class="atividade-header"><span class="atividade-icon">👽</span><span class="atividade-numero">8</span></div>
-                            <h3 class="atividade-titulo">✨ Um Novo Morador Chegou!</h3>
-                            <span class="atividade-tipo">Criação de Personagem + IA</span>
-                            <p class="atividade-descricao">Crie um novo monstro e use a magia da IA para gerar uma história sobre sua chegada ao condomínio. Como será que os outros moradores vão reagir?</p>
+                            <div class="atividade-header"><span class="atividade-icon">↔️</span><span class="atividade-numero">8</span></div>
+                            <h3 class="atividade-titulo">Monstro vs. Monstro</h3>
+                            <span class="atividade-tipo">Análise Comparativa</span>
+                            <p class="atividade-descricao">Escolha dois moradores e compare-os! Quais são suas semelhanças e diferenças? O que podemos aprender com eles sobre convivência?</p>
                         </div>
-                        <div class="atividade-footer">BNCC: EF67LP30</div>
+                        <div class="atividade-footer">BNCC: EF69LP47</div>
                     </div>
                     <div class="atividade-card" onclick="abrirModalAtividade('podcast')" tabindex="0">
                         <div>
@@ -637,7 +637,7 @@
             'noticia': { titulo: '📰 Notícia Urgente!', conteudo: `<h4>Objetivo:</h4><p>Praticar a estrutura do gênero textual notícia.</p><h4>Estrutura da Notícia:</h4><ul><li><strong>Manchete (Título):</strong> Crie um título chamativo. Ex: "CONFUSÃO GULOSA: Criatura Misteriosa Invade Condomínio por Torta de Maçã!".</li><li><strong>Lide (Primeiro Parágrafo):</strong> Responda às perguntas principais: O quê? (Uma perseguição) Quem? (Um porteiro e uma criatura) Onde? (No Condomínio da Rua Mortinho da Silva) Quando? (Na noite de ontem) Por quê? (Por causa de uma torta).</li><li><strong>Corpo da Notícia:</strong> Dê mais detalhes. Conte sobre a corrida, os outros moradores que apareceram e como a situação foi resolvida. Seja objetivo, como um jornalista de verdade!</li></ul>` },
             'entrevista-saci': { titulo: '🎙️ Entrevista com o Saci', conteudo: `<h4>Objetivo:</h4><p>Criar um roteiro de entrevista e praticar a oralidade.</p><h4>Estrutura do Roteiro:</h4><ol><li><strong>Apresentação:</strong> O repórter se apresenta e introduz o entrevistado: "Estamos aqui hoje com o morador mais travesso do condomínio, o Saci!".</li><li><strong>Perguntas (sugestões):</strong><ul><li>"Saci, é verdade que foi você que colocou a tachinha na cadeira do porteiro? Por quê?"</li><li>"Como é usar um redemoinho de vento para se locomover?"</li><li>"Qual a sua travessura favorita?"</li><li>"Como é a amizade entre os monstros do prédio?"</li></ul></li><li><strong>Encerramento:</strong> O repórter agradece a participação do Saci e se despede do público.</li></ol><h4>Dica:</h4><p>O aluno que for o Saci deve responder de forma engraçada e brincalhona!</p>` },
             'regulamento': { titulo: '📜 Regulamento do Condomínio', conteudo: `<h4>Objetivo:</h4><p>Produzir um texto instrucional com regras claras e justificativas.</p><h4>Como Fazer:</h4><p>Pense nos problemas que poderiam acontecer no condomínio e crie regras usando verbos no modo imperativo (faça, não deixe, mantenha).</p><h4>Exemplos de Regras:</h4><ul><li><strong>Regra 1:</strong> Não prender o botão do elevador. (Para o Saci)</li><li><strong>Regra 2:</strong> Manter os bebedouros de pássaros abastecidos apenas com o lanche do Sr. Vlad.</li><li><strong>Regra 3:</strong> Não perseguir os animais de estimação dos outros moradores. (Para o Lupicínio)</li><li><strong>Regra 4:</strong> Estacionar vassouras e carros estranhos somente na vaga designada.</li><li><strong>Regra 5:</strong> Festas com caldeirões devem ser comunicadas ao síndico com 24h de antecedência. (Para a Sra. B)</li></ul>` },
-            'novo-morador': { titulo: '👽 ✨ Um Novo Morador Chegou!', conteudo: `<div class="gemini-feature"><h4>Passo 1: Crie seu Monstro</h4><p>Preencha os campos abaixo para dar vida a um novo morador.</p><input id="monster-name" placeholder="Nome do Monstro" maxlength="50"><textarea id="monster-desc" placeholder="Descreva sua aparência, personalidade e um poder especial." rows="4" maxlength="300"></textarea><h4>Passo 2: Deixe a Magia Acontecer</h4><button onclick="gerarHistoriaMonstro()">✨ Gerar História com IA</button><div id="historia-gerada"><div id="loading-story" style="display:none;"></div><p id="texto-historia"></p></div></div>` },
+            'comparacao': {titulo: '↔️ Monstro vs. Monstro', conteudo: `<h4>Objetivo:</h4><p>Desenvolver o pensamento crítico e a habilidade de comparar e contrastar personagens.</p><h4>Passo a Passo:</h4><ol><li>Escolha uma dupla de personagens do livro (Ex: Conde Vlad e Saci, ou Sra. B e Lupicínio).</li><li>Em uma folha, desenhe um "Diagrama de Venn" (dois círculos que se cruzam no meio).</li><li>No círculo da esquerda, liste as características únicas do primeiro monstro.</li><li>No círculo da direita, liste as características únicas do segundo monstro.</li><li>Na área onde os círculos se cruzam, escreva o que eles têm em comum.</li></ol><h4>Reflexão:</h4><p>Apesar de todas as diferenças, por que eles conseguem ser bons vizinhos e amigos?</p>`},
             'podcast': { titulo: '🗣️ Podcast: "Monstros são gente boa?"', conteudo: `<h4>Objetivo:</h4><p>Planejar um roteiro e praticar a discussão oral de um tema.</p><h4>Estrutura do Episódio:</h4><ol><li><strong>Introdução (30 seg):</strong> Música de abertura e apresentação do tema pelo locutor. "Olá, bem-vindos ao MonstroCast! Hoje vamos discutir: devemos ter medo do que é diferente?".</li><li><strong>Bloco 1 (2 min):</strong> Contar resumidamente a história de Zé Chico, que tinha medo, mas depois virou amigo dos monstros.</li><li><strong>Bloco 2 (2 min):</strong> Discutir exemplos do dia a dia. Já julgamos alguém pela aparência? O que podemos fazer para evitar isso?</li><li><strong>Encerramento (30 seg):</strong> O locutor resume a conversa, passa a mensagem principal do livro e se despede.</li></ol><h4>Dica:</h4><p>Gravem o áudio usando o celular! Um aluno pode ser o "editor de som" e adicionar uma música de fundo.</p>` },
             'reclamacao-sra-b': { titulo: '😠 A Reclamação da Sra. B', conteudo: `<h4>Objetivo:</h4><p>Praticar a escrita de uma carta de reclamação, usando uma linguagem formal e argumentos claros.</p><h4>Estrutura da Carta:</h4><ol><li><strong>Data e Local:</strong> "Rua Mortinho da Silva, nº 13. Data de hoje."</li><li><strong>Destinatário:</strong> "Ao síndico do Condomínio dos Monstros, Sr. Conde Vlad".</li><li><strong>Assunto:</strong> "Reclamação sobre perseguição de animal de estimação".</li><li><strong>Corpo do Texto:</strong> Explique o problema de forma educada. "Prezado síndico, escrevo para registrar minha insatisfação com o morador do apartamento 302, Sr. Lupicínio. Em diversas ocasiões, ele tem perseguido meu gato pelo playground, causando estresse ao animal."</li><li><strong>Pedido:</strong> "Solicito que uma conversa seja realizada com o referido morador para que essa situação não se repita."</li><li><strong>Despedida:</strong> "Agradeço a atenção. Atenciosamente, Sra. B, apto. 401."</li></ol>` },
         };
@@ -779,6 +779,7 @@
     </script>
 </body>
 </html>
+
 
 
 
