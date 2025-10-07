@@ -276,7 +276,7 @@ document.addEventListener('DOMContentLoaded', () => {
             button.innerHTML = `
                 <img src="${monster.imageUrl}" alt="[Imagem de ${monster.name}]" class="intercom-img">
                 <div class="font-bold text-sm">${monster.name}</div>
-                <div class="text-xs text-purple-300">Apto. ${monster.apartment}</div>
+                <div class="text-xs text-purple-300"> ${monster.apartment}</div>
             `;
             button.addEventListener('click', () => handleCall(monster.id));
             intercomButtonsContainer.appendChild(button);
@@ -334,7 +334,7 @@ document.addEventListener('DOMContentLoaded', () => {
         taskDisplay.innerHTML = `
             <div class="w-full flex flex-col items-center">
                  <img src="${monster.imageUrl}" alt="[Imagem de ${monster.name}]" class="task-img">
-                <h3 class="font-bold text-2xl text-yellow-300 mb-2">${monster.name} (Apto. ${monster.apartment}) diz:</h3>
+                <h3 class="font-bold text-2xl text-yellow-300 mb-2">${monster.name} (${monster.apartment}) diz:</h3>
                 <p class="text-lg text-purple-200 mb-6 max-w-lg">"${problem.description}"</p>
                 <div id="options-container" class="w-full max-w-lg grid grid-cols-1 gap-3">
                     ${problem.options.map(opt => `
@@ -412,6 +412,7 @@ document.addEventListener('DOMContentLoaded', () => {
 </body>
 
 </html>
+
 
 
 
