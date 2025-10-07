@@ -133,7 +133,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2.5rem;
-            max-width: 800px;
+            max-width: 1200px;
             width: 100%;
         }
 
@@ -146,12 +146,20 @@
             border: 2px solid #2e242d;
             text-align: center;
             overflow: hidden;
+            display: flex;
+            flex-direction: column; 
         }
         
         .main-card:hover {
             transform: translateY(-10px);
             box-shadow: var(--sombra-hover);
             border-color: var(--cor-laranja-queimado);
+        }
+
+        .card-link {
+            text-decoration: none;
+            color: inherit;
+            display: flex;
         }
 
         .card-image {
@@ -492,6 +500,17 @@
                         </p>
                     </div>
                 </div>
+                a href="jogo-porteiro.html" target="_blank" class="card-link" aria-label="Abrir jogo do porteiro em nova aba">
+                    <div class="main-card">
+                        <img src="https://placehold.co/600x400/7A8B67/EAE6E1?text=Jogo+do+Porteiro" alt="[Imagem do Jogo do Porteiro]" class="card-image">
+                        <div class="card-content">
+                            <h3 class="card-title">Jogo do Porteiro</h3>
+                            <p class="card-description">
+                                Teste suas habilidades como Zé Chico! Atenda aos chamados dos monstros e resolva os problemas do condomínio.
+                            </p>
+                        </div>
+                    </div>
+                </a>
             </div>
         </div>
 
@@ -779,6 +798,7 @@
     </script>
 </body>
 </html>
+
 
 
 
