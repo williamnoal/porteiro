@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>O Caso do Condomínio dos Monstros</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Special+Elite&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            overflow: hidden;
+        }
+        .font-creepster { font-family: 'Creepster', cursive; }
+        .font-elite { font-family: 'Special Elite', cursive; }
+        .location-btn, .inventory-item, .clue, .suspect-choice {
+            transition: all 0.2s ease-in-out;
+        }
+        .location-btn:hover {
+            background-color: #a21caf;
+            transform: translateX(5px);
+        }
+        .inventory-item:hover, .clue:hover, .suspect-choice:hover {
+            transform: scale(1.05);
+            background-color: #4a044e;
+        }
+        .dialogue-box {
+            background-image: url('https://www.transparenttextures.com/patterns/notebook-dark.png');
+        }
+        .clue-span {
+            cursor: default;
+        }
+        .clue-span.found {
+            color: #fde047;
+            font-weight: bold;
+            pointer-events: none;
+        }
+        .clue.dragging {
+            opacity: 0.5;
+            border: 2px dashed #fde047;
+        }
+        .theory-slot {
+            transition: background-color 0.2s ease;
+        }
+        .theory-slot.drag-over {
+            background-color: #3f3f46;
+        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #4a044e; }
+        ::-webkit-scrollbar-thumb { background: #a21caf; border-radius: 4px; }
+    </style>
+</head>
+<body class="bg-purple-900 bg-gradient-to-br from-gray-900 via-purple-900 to-slate-800 text-white min-h-screen flex items-center justify-center p-4">
+
+    <!-- Main Game Container -->
+    <div id="game-container" class="w-full max-w-7xl h-[95vh] bg-slate-800/50 backdrop-blur-sm rounded-2xl shadow-2xl shadow-purple-500/20 flex flex-col md:flex-row overflow-hidden border-2 border-purple-500/30">
+
+        <!-- Left Panel: Navigation & Inventory -->
+        <div id="left-panel" class="w-full md:w-1/3 lg:w-1/4 bg-slate-900/60 p-6 flex-col border-r-2 border-purple-500/30 overflow-y-auto" style="display: none;">
+            <div>
+                <h2 class="font-creepster text-3xl text-center text-yellow-300">Explorar</h2>
+                <div id="locations-list" class="flex flex-col space-y-2 mt-4"></div>
+            </div>
+            <div class="mt-8 flex-1">
+                <h2 class="font-creepster text-3xl text-center text-yellow-300">Caderno de Anotações</h2>
+                <div id="inventory-list" class="mt-4 grid grid-cols-3 gap-3 bg-slate-800/50 p-2 rounded-lg min-h-[80px]"></div>
+            </div>
+             <button id="solve-button" class="w-full bg-green-600 hover:bg-green-700 font-bold py-2 px-4 rounded-lg shadow-lg disabled:bg-gray-500 disabled:cursor-not-allowed">Resolver o Caso!</button>
+        </div>
+
+        <!-- Right Panel: Main Screen -->
+        <div id="main-screen" class="flex-1 flex flex-col p-6 overflow-y-auto">
+            
+             <!-- Home Screen -->
+            <div id="home-screen" class="flex flex-1 flex-col items-center justify-center text-center p-4">
+                <h1 class="font-creepster text-5xl md:text-7xl text-yellow-300 mb-4 drop-shadow-[0_2px_2px_rgba(0,0,0,1)]">O Caso do Condomínio dos Monstros</h1>
+                <img src="https://placehold.co/400x200/1e293b/fde047?text=DETETIVE+DE+MONSTROS" alt="Ilustração de uma lupa sobre a silhueta de um monstro" class="rounded-lg shadow-lg mb-6 border-4 border-purple-400">
+                <div class="font-elite text-lg max-w-xl mx-auto space-y-3 text-left bg-slate-900/80 p-6 rounded-lg border-2 border-yellow-300/50 mb-6">
+                    <h2 class="font-creepster text-3xl text-yellow-300 text-center mb-2">Como Jogar</h2>
+                    <p><strong>1. Explore:</strong> Visite os locais do condomínio usando o menu à esquerda.</p>
+                    <p><strong>2. Investigue:</strong> Leia os diálogos com atenção. Algumas frases são pistas! Clique nelas para adicioná-las ao seu Caderno de Anotações.</p>
+                    <p><strong>3. Deduza:</strong> Quando tiver todas as pistas, o botão "Resolver o Caso!" ficará ativo.</p>
+                    <p><strong>4. Acuse:</strong> Monte sua teoria e acuse o monstro que você acredita ser o culpado. Boa sorte!</p>
+                </div>
+                <button id="start-investigation-button" class="bg-purple-600 hover:bg-purple-700 font-bold py-3 px-8 rounded-lg shadow-lg text-2xl transform hover:scale-105 transition-transform">Começar a Investigar!</button>
+            </div>
+
+            <!-- Case Briefing Screen -->
+            <div id="case-briefing-screen" class="hidden flex-1 flex flex-col items-center justify-center text-center">
+                 <h1 id="case-title" class="font-creepster text-5xl md:text-6xl text-yellow-300 mb-4 drop-shadow-[0_2px_2px_rgba(0,0,0,1)]"></h1>
+                 <button id="start-button" class="bg-purple-600 hover:bg-purple-700 font-bold py-3 px-8 rounded-lg shadow-lg text-2xl transform hover:scale-105 transition-transform">Ir para a Portaria</button>
+            </div>
+            
+            <!-- Location Screen -->
+            <div id="location-screen" class="hidden flex-1 flex flex-col items-center justify-center">
+                <div id="character-area" class="text-center">
+                     <img id="character-img" src="" class="h-48 w-48 object-cover rounded-full mx-auto border-4 border-purple-400 mb-4">
+                     <h2 id="character-name" class="font-creepster text-4xl"></h2>
+                </div>
+                <div id="dialogue-box" class="dialogue-box font-elite text-xl w-full max-w-2xl bg-slate-900/80 p-6 rounded-lg mt-6 border-2 border-yellow-300/50 min-h-[150px]">
+                    <p id="dialogue-text"></p>
+                </div>
+            </div>
+            
+            <!-- Solve Screen -->
+            <div id="solve-screen" class="hidden flex-1 flex flex-col">
+                <h2 class="font-creepster text-4xl text-center text-yellow-300 mb-2">A Teoria do Porteiro</h2>
+                <p class="text-center mb-4">Construa sua teoria arrastando as pistas corretas para os quadros. Depois, acuse o culpado.</p>
+                <div class="flex flex-col md:flex-row flex-1 gap-6">
+                    <div class="md:w-1/3">
+                        <h3 class="font-bold text-xl text-purple-300 text-center mb-2">Pistas Coletadas</h3>
+                        <div id="clues-list" class="bg-slate-900/50 p-3 rounded-lg space-y-2 h-full min-h-[200px]"></div>
+                    </div>
+                    <div class="md:w-2/3 flex flex-col">
+                        <h3 class="font-bold text-xl text-purple-300 text-center mb-2">Quadro da Investigação</h3>
+                        <div id="theory-board" class="bg-slate-900/50 p-3 rounded-lg space-y-3 flex-1">
+                            <div class="theory-slot-wrapper">
+                                <h4 class="font-bold text-green-400">Oportunidade:</h4>
+                                <p class="text-xs text-slate-400 mb-1">Qual pista mostra que o suspeito podia cometer o crime?</p>
+                                <div id="slot-opportunity" data-slot-type="opportunity" class="theory-slot min-h-[6rem] bg-slate-800 rounded-lg p-2 border-2 border-dashed border-slate-600"></div>
+                            </div>
+                            <div class="theory-slot-wrapper">
+                                <h4 class="font-bold text-yellow-400">Motivação:</h4>
+                                <p class="text-xs text-slate-400 mb-1">Qual pista explica POR QUE o suspeito cometeria o crime?</p>
+                                <div id="slot-motive" data-slot-type="motive" class="theory-slot min-h-[6rem] bg-slate-800 rounded-lg p-2 border-2 border-dashed border-slate-600"></div>
+                            </div>
+                            <div class="theory-slot-wrapper">
+                                <h4 class="font-bold text-red-400">Prova Concreta:</h4>
+                                <p class="text-xs text-slate-400 mb-1">Qual é a evidência mais forte contra o suspeito?</p>
+                                <div id="slot-proof" data-slot-type="proof" class="theory-slot min-h-[6rem] bg-slate-800 rounded-lg p-2 border-2 border-dashed border-slate-600"></div>
+                            </div>
+                        </div>
+                        <button id="accuse-button" class="mt-4 w-full bg-red-600 hover:bg-red-700 font-bold py-2 px-4 rounded-lg shadow-lg disabled:bg-gray-500 disabled:cursor-not-allowed">Acusar!</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modals -->
+    <div id="suspects-modal" class="fixed inset-0 bg-black/80 flex items-center justify-center p-4 hidden z-50">
+        <div class="bg-slate-800 border-2 rounded-2xl shadow-2xl p-8 max-w-2xl w-full text-center">
+            <h2 class="font-creepster text-4xl text-yellow-300 mb-4">Quem é o Culpado?</h2>
+            <p class="mb-6">Sua teoria está montada. Aponte o monstro responsável!</p>
+            <div id="suspects-list" class="grid grid-cols-2 md:grid-cols-4 gap-4"></div>
+            <button id="cancel-accusation" class="mt-6 bg-gray-500 hover:bg-gray-600 font-bold py-2 px-6 rounded-lg">Voltar</button>
+        </div>
+    </div>
+    <div id="result-modal" class="fixed inset-0 bg-black/80 flex items-center justify-center p-4 hidden z-50">
+        <div id="result-modal-content" class="bg-slate-800 border-2 rounded-2xl shadow-2xl p-8 max-w-md w-full text-center">
+            <h2 id="result-title" class="font-creepster text-5xl mb-4"></h2>
+            <p id="result-message" class="text-lg mb-6"></p>
+            <button id="play-again-button" class="w-full bg-green-600 hover:bg-green-700 font-bold py-3 px-8 rounded-lg shadow-lg text-xl">Jogar Novamente</button>
+        </div>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    
+    // --- CASES DATABASE ---
+    const CASES_DATABASE = [
+        // CASE 1
+        {
+            title: "Caso 1: O Jornal Sumido",
+            culprit: 'saci',
+            theory: { opportunity: 'clue4', motive: 'clue2', proof: 'clue3' },
+            solution: "Você acertou! Foi o <strong>Saci</strong>! Com a ameaça do ectoplasma, ele pegou o jornal para fazer um chapéu improvisado e proteger seu gorro. Ótimo trabalho!",
+            locations: [
+                { id: 'portaria', name: 'Portaria', sortOrder: 1, characterId: null, dialogue: 'Meu Sindicato! Meu jornal de esportes sumiu da mesa! Como vou saber a escalação do time alvipúrpura agora? Preciso investigar.' },
+                { id: 'apto201', name: 'Apto. 201', sortOrder: 2, characterId: 'esqueleto', dialogue: 'Olá, Zé! Se serve de ajuda, eu <span id="clue-click-clue5" class="clue-span">vi o Saci mais cedo, todo concentrado tentando dobrar uma folha grande de papel</span>. Ele parecia querer fazer um chapéu.' },
+                { id: 'apto202', name: 'Apto. 202', sortOrder: 3, characterId: 'saci', dialogue: 'Jornal? Eu? Imagina! Só peguei emprestado pra... uhn... ler as notícias! É... isso! Agora, se me dá licença, preciso terminar meu... dever de casa.' },
+                { id: 'apto301', name: 'Apto. 301', sortOrder: 4, characterId: 'fantasma', dialogue: 'Buuuu... Passei pelo segundo andar e, sem querer, <span id="clue-click-clue2" class="clue-span">espirrei ectoplasma no corredor</span>. O Saci ficou uma fera, disse que ia estragar o gorro dele.' },
+                { id: 'apto502', name: 'Apto. 502', sortOrder: 7, characterId: 'frank', dialogue: 'Meus ratinhos? Para ser sincero, <span id="clue-click-clue1" class="clue-span">eles preferem a página de economia</span>, os gráficos são mais divertidos de roer.' },
+                { id: 'playground', name: 'Playground', sortOrder: 8, characterId: null, dialogue: 'Olhando com atenção para o chão... vejo um pedaço de jornal amassado. E do lado, <span id="clue-click-clue3" class="clue-span">uma pegada de um pé só está marcada na poeira</span>. Curioso.' },
+                { id: 'garagem', name: 'Garagem', sortOrder: 9, characterId: 'mula', dialogue: 'Eu estava aqui polindo minhas ferraduras quando <span id="clue-click-clue4" class="clue-span">ouvi um barulho de redemoinho vindo da portaria</span>. Logo depois, um som de papel sendo rasgado.' }
+            ],
+            characters: { 'frank': { name: 'Frank', isSuspect: true }, 'fantasma': { name: 'Fantasma', isSuspect: false }, 'mula': { name: 'Mula s/ Cabeça', isSuspect: false }, 'esqueleto': { name: 'Esqueleto', isSuspect: false }, 'saci': { name: 'Saci', isSuspect: true } },
+            clues: [
+                { id: 'clue1', name: 'Ratos Inocentes', description: 'Os ratos de Frank preferem roer a página de economia, não a de esportes.' },
+                { id: 'clue2', name: 'Motivo da Proteção', description: 'O Fantasma irritou o Saci com ectoplasma, dando-lhe um motivo para proteger seu gorro.' },
+                { id: 'clue3', name: 'Pegada Única', description: 'A pegada de um pé só na cena do crime é uma prova clara contra o Saci.' },
+                { id: 'clue4', name: 'Som do Redemoinho', description: 'A Mula ouviu o Saci na portaria na hora do crime, provando a oportunidade.' },
+                { id: 'clue5', name: 'Confirmação do Plano', description: 'O Esqueleto viu o Saci com papel, confirmando sua intenção de fazer algo com ele.' }
+            ]
+        },
+        // CASE 2
+        {
+            title: "Caso 2: A Tachinha na Cadeira",
+            culprit: 'saci',
+            theory: { opportunity: 'clue2', motive: 'clue4', proof: 'clue3' },
+            solution: "Você acertou! Foi o <strong>Saci</strong>! Ele confessou que não resistiu à tentação de pregar uma peça. Ele pediu desculpas... rindo.",
+            locations: [
+                { id: 'portaria', name: 'Portaria', sortOrder: 1, characterId: null, dialogue: 'AIAIAIAI! Acabei de sentar em uma tachinha! Alguém pregou uma peça em mim. Preciso descobrir quem foi o engraçadinho.' },
+                { id: 'apto201', name: 'Apto. 201', sortOrder: 2, characterId: 'esqueleto', dialogue: 'Uma tachinha? Que horror! Eu não faria isso. Mas, sabe, <span id="clue-click-clue2" class="clue-span">vi o Saci saindo da loja de ferragens hoje mais cedo</span>. Ele estava rindo sozinho.' },
+                { id: 'apto202', name: 'Apto. 202', sortOrder: 3, characterId: 'saci', dialogue: 'Tachinha? Eu? Nunca! Eu só estava... uh... testando a cadeira pra ver se era confortável. É, isso! Testando o conforto. Hehehe.' },
+                { id: 'apto502', name: 'Apto. 502', sortOrder: 7, characterId: 'frank', dialogue: 'Uma tachinha? Primitivo! Eu uso parafusos de titânio! <span id="clue-click-clue4" class="clue-span">Mas ouvi uma risadinha e um redemoinho perto da sua mesa mais cedo</span>. Parecia o Saci.'},
+                { id: 'garagem', name: 'Garagem', sortOrder: 9, characterId: 'mula', dialogue: 'Eu não vi nada, Zé. Só um detalhe estranho... <span id="clue-click-clue3" class="clue-span">Há um rastro de poeira vermelha no chão</span>, indo da porta da rua até a portaria. Lembra a terra de um redemoinho.' }
+            ],
+            characters: { 'esqueleto': { name: 'Esqueleto', isSuspect: false }, 'saci': { name: 'Saci', isSuspect: true }, 'frank': { name: 'Frank', isSuspect: true }, 'mula': { name: 'Mula s/ Cabeça', isSuspect: false } },
+            clues: [
+                { id: 'clue2', name: 'Saci na Ferragem', description: 'O Saci foi visto na loja de ferragens, o que lhe deu a oportunidade de comprar a tachinha.' },
+                { id: 'clue3', name: 'Poeira Vermelha', description: 'A poeira de redemoinho na cena do crime é a prova que liga o Saci ao local.' },
+                { id: 'clue4', name: 'Risada Suspeita', description: 'Frank ouviu o Saci rindo, mostrando que sua motivação era apenas fazer uma travessura.'}
+            ]
+        },
+        // CASE 3
+        {
+            title: "Caso 3: O Maxilar Perdido",
+            culprit: 'lupicinio',
+            theory: { opportunity: 'clue1', motive: 'clue2', proof: 'clue3' },
+            solution: "Você acertou! Foi o <strong>Sr. Lupicínio</strong>! Ele pegou o maxilar pensando que era um osso de brinquedo para roer. Ele já devolveu, um pouco babado.",
+            locations: [
+                { id: 'portaria', name: 'Portaria', sortOrder: 1, characterId: null, dialogue: 'O Esqueleto do 201 está desesperado! Ele perdeu o maxilar e não consegue falar direito. Preciso ajudá-lo a encontrar.'},
+                { id: 'apto201', name: 'Apto. 201', sortOrder: 2, characterId: 'esqueleto', dialogue: "'E' per'i meu ma'i'ar! <span id='clue-click-clue1' class='clue-span'>A ú'ima 'ez 'ue o 'i, es'a'a 'impando perto da 'a'ada</span>. A'u'em 'e'e 'er 'e'o!" },
+                { id: 'apto302', name: 'Apto. 302', sortOrder: 5, characterId: 'lupicinio', dialogue: 'Osso? Eu adoro ossos! Mas não vi nenhum por aí. Só... uh... um graveto com um formato engraçado. <span id="clue-click-clue2" class="clue-span">Estava com uma vontade enorme de roer alguma coisa hoje</span>.' },
+                { id: 'apto401', name: 'Apto. 401', sortOrder: 6, characterId: 'sra_b', dialogue: 'O maxilar do vizinho? Que horror! Eu não vi nada. Mas o cachorrão do 302 vive farejando a porta dos outros.' },
+                { id: 'playground', name: 'Playground', sortOrder: 8, characterId: null, dialogue: 'Nada fora do comum por aqui, apenas algumas marcas de patas. Espera, o que é aquilo perto da caixa de areia? <span id="clue-click-clue3" class="clue-span">É um osso de mandíbula, cheio de marcas de dentes caninos!</span>' }
+            ],
+            characters: { 'esqueleto': { name: 'Esqueleto', isSuspect: false }, 'lupicinio': { name: 'Sr. Lupicínio', isSuspect: true }, 'sra_b': { name: 'Sra. B', isSuspect: true } },
+            clues: [
+                { id: 'clue1', name: 'Local do Sumiço', description: 'O Esqueleto perdeu o maxilar na sacada, um local acessível a quem passa pelo corredor ou playground.' },
+                { id: 'clue2', name: 'Desejo de Roer', description: 'O Lobisomem confessou que estava com uma vontade incontrolável de roer algo, o que é seu motivo.' },
+                { id: 'clue3', name: 'Marcas de Dentes', description: 'O maxilar foi encontrado com marcas de dentes de lobo, a prova definitiva contra o Sr. Lupicínio.' }
+            ]
+        },
+        // CASE 4
+        {
+            title: "Caso 4: O Cheiro de Queimado",
+            culprit: 'mula',
+            theory: { opportunity: 'clue2', motive: 'clue3', proof: 'clue1' },
+            solution: "Você acertou! Foi a <strong>Mula sem Cabeça</strong>! Ela estava galopando animada pelo pátio e o fogo de seu pescoço chamuscou um pouco a grama. Não foi por mal!",
+            locations: [
+                { id: 'portaria', name: 'Portaria', sortOrder: 1, characterId: null, dialogue: 'Um cheiro forte de queimado tomou conta do pátio! Verifiquei o quadro de luz e está tudo certo. Preciso descobrir a origem disso.' },
+                { id: 'apto101', name: 'Apto. 101', sortOrder: 2, characterId: 'mula', dialogue: 'Cheiro de queimado? Ah... deve ser... uh... o churrasco do vizinho! É, isso! Eu? Não, eu estava aqui dentro o tempo todo, quietinha.' },
+                { id: 'apto401', name: 'Apto. 401', sortOrder: 6, characterId: 'sra_b', dialogue: 'Meu caldeirão está desligado, queridinho. <span id="clue-click-clue3" class="clue-span">Mas vi a vizinha do 101 muito agitada hoje, correndo de um lado para o outro</span>. Ela parecia muito animada.' },
+                { id: 'apto502', name: 'Apto. 502', sortOrder: 7, characterId: 'frank', dialogue: 'Meus experimentos não produzem cheiro de queimado, apenas de ozônio! <span id="clue-click-clue2" class="clue-span">Mas ouvi um som de galope vindo do pátio há pouco tempo</span>, o que é estranho.' },
+                { id: 'playground', name: 'Playground', sortOrder: 8, characterId: null, dialogue: 'O cheiro está forte aqui. Olhe! <span id="clue-click-clue1" class="clue-span">A grama em uma parte do pátio está preta e chamuscada, com marcas de ferraduras em volta.</span>' }
+            ],
+            characters: { 'mula': { name: 'Mula s/ Cabeça', isSuspect: true }, 'sra_b': { name: 'Sra. B', isSuspect: true }, 'frank': { name: 'Frank', isSuspect: true } },
+            clues: [
+                { id: 'clue1', name: 'Grama Queimada', description: 'A grama queimada com marcas de ferradura é a prova que incrimina a Mula sem Cabeça.' },
+                { id: 'clue2', name: 'Som de Galope', description: 'Frank ouviu um galope no pátio, colocando a Mula na cena do crime (oportunidade).' },
+                { id: 'clue3', name: 'Moradora Agitada', description: 'A Mula estava muito agitada, e sua animação (motivo) a fez galopar e queimar a grama sem querer.' }
+            ]
+        },
+        // CASE 5
+        {
+            title: "Caso 5: O Uivo da Meia-Noite",
+            culprit: 'lupicinio',
+            theory: { opportunity: 'clue3', motive: 'clue1', proof: 'clue2' },
+            solution: "Você acertou! Foi o <strong>Sr. Lupicínio</strong>. A lua cheia o deixou sentimental e ele não resistiu a uma boa cantoria. Ele prometeu ser mais discreto.",
+            locations: [
+                { id: 'portaria', name: 'Portaria', sortOrder: 1, characterId: null, dialogue: 'Um uivo longo e triste acordou o condomínio! Quem estaria fazendo tanto barulho a essa hora? Preciso restaurar o silêncio.'},
+                { id: 'apto301', name: 'Apto. 301', sortOrder: 4, characterId: 'fantasma', dialogue: 'Buuuu... que barulheira! Não consigo assombrar em paz. Parecia um cachorro grande, talvez um lobo. Veio da direção do apartamento do Sr. Lupicínio.' },
+                { id: 'apto302', name: 'Apto. 302', sortOrder: 5, characterId: 'lupicinio', dialogue: 'Uivo? Eu? Não... deve ter sido um cachorro de rua. Eu estava apenas... uh... apreciando a vista da janela. <span id="clue-click-clue1" class="clue-span">A lua está tão bonita e cheia hoje</span>, não acha?' },
+                { id: 'apto401', name: 'Apto. 401', sortOrder: 6, characterId: 'sra_b', dialogue: 'Ah, o uivo... acontece todo mês. Meu gatinho fica todo arrepiado. <span id="clue-click-clue2" class="clue-span">Encontrei um tufo de pelos de lobo no meu capacho hoje de manhã</span>.' },
+                { id: 'playground', name: 'Playground', sortOrder: 8, characterId: null, dialogue: 'Está tudo quieto agora. <span id="clue-click-clue3" class="clue-span">Mas a janela do apartamento 302 está escancarada</span>, e o som parecia vir mesmo daquela direção.' }
+            ],
+            characters: { 'fantasma': { name: 'Fantasma', isSuspect: false }, 'lupicinio': { name: 'Sr. Lupicínio', isSuspect: true }, 'sra_b': { name: 'Sra. B', isSuspect: true } },
+            clues: [
+                { id: 'clue1', name: 'Lua Cheia', description: 'A lua cheia é a motivação perfeita para um lobisomem uivar.' },
+                { id: 'clue2', name: 'Pelos de Lobo', description: 'Os pelos de lobo na porta da Sra. B são a prova material contra o Sr. Lupicínio.' },
+                { id: 'clue3', name: 'Janela Aberta', description: 'A janela aberta do 302 mostra a oportunidade que ele teve para que seu uivo fosse ouvido por todos.' }
+            ]
+        },
+        // CASE 6
+        {
+            title: "Caso 6: O Coração Desaparecido",
+            culprit: 'bichopapao',
+            theory: { opportunity: 'clue3', motive: 'clue2', proof: 'clue1' },
+            solution: "Você acertou! Foi o <strong>Bicho-Papão</strong>! Ele viu o pacote vermelho na geladeira e achou que era um doce gigante. Já devolveu, meio lambido.",
+            locations: [
+                { id: 'portaria', name: 'Portaria', sortOrder: 1, characterId: null, dialogue: 'O coração de boi que o Frank pediu sumiu da geladeira da portaria! A experiência dele está em risco! Preciso achar o ladrão de órgãos... de boi.' },
+                { id: 'apto501', name: 'Apto. 501', sortOrder: 7, characterId: 'vlad', dialogue: 'Coração de boi? Que nojo! Prefiro algo mais... líquido. Não vi nada, mas <span id="clue-click-clue2" class="clue-span">o Bicho-Papão não para de reclamar que está com fome de doces</span>.' },
+                { id: 'apto502', name: 'Apto. 502', sortOrder: 8, characterId: 'frank', dialogue: 'Meu coração! Sem ele, meu experimento falhará! Eu vi o Bicho-Papão rondando a portaria.' },
+                { id: 'playground', name: 'Playground', sortOrder: 9, characterId: 'bichopapao', dialogue: 'Doce? Eu amo doce! Mas não peguei nada! Só... uh... um pacote vermelho que estava dando sopa. <span id="clue-click-clue3" class="clue-span">Eu estava perto da portaria, sim</span>, mas foi só para ver o movimento!' }
+            ],
+            characters: { 'vlad': { name: 'Conde Vlad', isSuspect: true }, 'frank': { name: 'Frank', isSuspect: false }, 'bichopapao': { name: 'Bicho-Papão', isSuspect: true } },
+            clues: [
+                { id: 'clue1', name: 'Baba Verde', description: 'A baba verde na geladeira é a prova que só poderia ter sido deixada pelo Bicho-Papão.' },
+                { id: 'clue2', name: 'Fome de Doce', description: 'A fome de doce do Bicho-Papão é o motivo pelo qual ele confundiu o pacote com uma guloseima.' },
+                { id: 'clue3', name: 'Suspeito na Cena', description: 'O Bicho-Papão admitiu estar na portaria, o que lhe deu a oportunidade de cometer o furto.' }
+            ]
+        },
+        // CASE 7
+        {
+            title: "Caso 7: A Sabotagem do Elevador",
+            culprit: 'saci',
+            theory: { opportunity: 'clue2', motive: 'clue3', proof: 'clue1' },
+            solution: "Você acertou! Foi o <strong>Saci</strong>, mais uma vez! Achar divertido ver os outros subindo de escada é a única motivação dele. Ele já tirou a fita.",
+            locations: [
+                { id: 'portaria', name: 'Portaria', sortOrder: 1, characterId: null, dialogue: 'De novo! O elevador está preso no segundo andar com fita adesiva no botão. Quem está causando problemas para os moradores?'},
+                { id: 'apto201', name: 'Apto. 201', sortOrder: 2, characterId: 'esqueleto', dialogue: 'Ah, não! De novo! Tive que subir de escada e quase perdi uma tíbia. É sempre o vizinho do lado...' },
+                { id: 'apto202', name: 'Apto. 202', sortOrder: 3, characterId: 'saci', dialogue: 'Elevador preso? Que coisa chata! Eu não sei de nada. Mas, sabe, <span id="clue-click-clue3" class="clue-span">é engraçado ver a cara de cansaço do Fantasma quando ele sobe as escadas</span>.' },
+                { id: 'apto301', name: 'Apto. 301', sortOrder: 4, characterId: 'fantasma', dialogue: 'Buuuu! Isso é um ultraje! Flutuar escada acima é tão cansativo. <span id="clue-click-clue2" class="clue-span">Acabei de ver o Saci saindo do elevador no segundo andar</span>, pouco antes de parar de funcionar.' },
+                { id: 'playground', name: 'Playground', sortOrder: 8, characterId: null, dialogue: 'O playground está vazio, mas... o que é isso? <span id="clue-click-clue1" class="clue-span">Um rolo de fita adesiva vazio, jogado perto do balanço. Exatamente o tipo usado no botão.</span>' }
+            ],
+            characters: { 'esqueleto': { name: 'Esqueleto', isSuspect: false }, 'saci': { name: 'Saci', isSuspect: true }, 'fantasma': { name: 'Fantasma', isSuspect: false } },
+            clues: [
+                { id: 'clue1', name: 'Rolo de Fita', description: 'O rolo de fita encontrado no playground é a prova material do crime.' },
+                { id: 'clue2', name: 'Testemunha Ocular', description: 'O Fantasma viu o Saci no local, provando sua oportunidade de prender o elevador.' },
+                { id: 'clue3', name: 'Motivação Maligna', description: 'O Saci confessou que acha graça do cansaço alheio, revelando sua motivação para a peça.' }
+            ]
+        },
+        // CASE 8
+        {
+            title: "Caso 8: O Barulho de Correntes",
+            culprit: 'fantasma',
+            theory: { opportunity: 'clue3', motive: 'clue1', proof: 'clue2' },
+            solution: "Você acertou! Foi o <strong>Fantasma</strong>! Ele estava apenas praticando seus sustos, mas uma de suas correntes se soltou e ele a estava procurando. Já a encontrou.",
+            locations: [
+                { id: 'portaria', name: 'Portaria', sortOrder: 1, characterId: null, dialogue: 'Correntes foram ouvidas se arrastando pelos corredores durante a noite, assustando até os monstros mais corajosos! Quem está fazendo esse barulho?'},
+                { id: 'apto201', name: 'Apto. 201', sortOrder: 2, characterId: 'esqueleto', dialogue: 'Que barulheira! Parecia metal se arrastando. <span id="clue-click-clue1" class="clue-span">O Fantasma me disse que estava se preparando para o "Susto Anual"</span> e queria testar um novo truque.' },
+                { id: 'apto301', name: 'Apto. 301', sortOrder: 4, characterId: 'fantasma', dialogue: 'Barulho? Buuuu... talvez. Eu... uh... perdi uma coisinha. Muito importante para minhas assombrações. Não era minha intenção incomodar.' },
+                { id: 'apto502', name: 'Apto. 502', sortOrder: 7, characterId: 'frank', dialogue: 'Correntes? Eu uso cabos de alta tensão, não correntes. Mas <span id="clue-click-clue3" class="clue-span">vi uma figura translúcida flutuando pelo corredor do terceiro andar</span>.' },
+                { id: 'garagem', name: 'Garagem', sortOrder: 9, characterId: null, dialogue: 'A garagem está silenciosa. No entanto, há <span id="clue-click-clue2" class="clue-span">marcas de arranhões no chão perto do elevador, como se algo de metal pesado tivesse sido arrastado por ali.</span>' }
+            ],
+            characters: { 'esqueleto': { name: 'Esqueleto', isSuspect: false }, 'fantasma': { name: 'Fantasma', isSuspect: true }, 'frank': { name: 'Frank', isSuspect: true } },
+            clues: [
+                { id: 'clue1', name: 'Susto Anual', description: 'O Fantasma estava praticando para um evento, o que explica o motivo do barulho.' },
+                { id: 'clue2', name: 'Arranhões no Chão', description: 'As marcas de metal arrastado no chão são a prova da passagem do Fantasma com suas correntes.' },
+                { id: 'clue3', name: 'Figura Translúcida', description: 'Frank viu o Fantasma no corredor, confirmando a oportunidade de fazer o barulho.' }
+            ]
+        },
+        // CASE 9
+        {
+            title: "Caso 9: O Apagão Assustador",
+            culprit: 'frank',
+            theory: { opportunity: 'clue1', motive: 'clue2', proof: 'clue3' },
+            solution: "Você acertou! Foi o <strong>Frank</strong>! Ele ligou sua nova máquina e sobrecarregou a rede. Ele pede desculpas e disse que vai instalar um gerador próprio.",
+            locations: [
+                { id: 'portaria', name: 'Portaria', sortOrder: 1, characterId: null, dialogue: 'As luzes do prédio piscaram e se apagaram por um minuto inteiro! O que causou essa queda de energia? Preciso checar a caixa de força.'},
+                { id: 'apto402', name: 'Apto. 402', sortOrder: 6, characterId: 'alien', dialogue: 'Detectei uma sobrecarga de energia massiva. <span id="clue-click-clue1" class="clue-span">A anomalia se originou no quinto andar, setor 2.</span>' },
+                { id: 'apto501', name: 'Apto. 501', sortOrder: 7, characterId: 'vlad', dialogue: 'Luzes? Eu prefiro a escuridão. Mas o barulho vindo do laboratório do meu vizinho estava mais alto que o normal.' },
+                { id: 'apto502', name: 'Apto. 502', sortOrder: 8, characterId: 'frank', dialogue: 'Apagão? Ah, sim. Eu estava... uh... testando uma torradeira nova. Muito potente. <span id="clue-click-clue2" class="clue-span">Precisava de muita energia para dar vida... ao pão!</span> É isso, ao pão.' },
+                { id: 'garagem', name: 'Garagem', sortOrder: 9, characterId: null, dialogue: 'A caixa de força principal está aqui. <span id="clue-click-clue3" class="clue-span">O disjuntor do apartamento 502 está desarmado e cheirando a queimado.</span> Alguém usou energia demais.' }
+            ],
+            characters: { 'alien': { name: 'Alienígena', isSuspect: false }, 'vlad': { name: 'Conde Vlad', isSuspect: false }, 'frank': { name: 'Frank', isSuspect: true } },
+            clues: [
+                { id: 'clue1', name: 'Origem da Sobrecarga', description: 'O Alienígena detectou que o apagão veio do 502, dando a oportunidade a Frank.' },
+                { id: 'clue2', name: 'Experimento Potente', description: 'Frank admitiu precisar de muita energia para seu \'experimento\', revelando seu motivo.' },
+                { id: 'clue3', name: 'Disjuntor Queimado', description: 'O disjuntor queimado do 502 é a prova física que incrimina Frank.' }
+            ]
+        },
+        // CASE 10
+        {
+            title: "Caso 10: A Torta Sonífera",
+            culprit: 'sra_b',
+            theory: { opportunity: 'clue1', motive: 'clue3', proof: 'clue2' },
+            solution: "Você acertou! Foi a <strong>Sra. B</strong>! Ela encantou a torta para ensinar uma lição ao Sr. Lupicínio por ele sempre perseguir o gatinho dela. Ele acordará em algumas horas, sem danos.",
+            locations: [
+                { id: 'portaria', name: 'Portaria', sortOrder: 1, characterId: null, dialogue: 'Pobre Sr. Lupicínio! Comeu a torta de aniversário da Sra. B e caiu em um sono profundo! Foi um acidente ou... feitiçaria?'},
+                { id: 'apto302', name: 'Apto. 302', sortOrder: 5, characterId: 'lupicinio', dialogue: 'Zzzzz... gatos... torta... zzzzz...' },
+                { id: 'apto401', name: 'Apto. 401', sortOrder: 6, characterId: 'sra_b', dialogue: 'Minha torta? Ah, só usei ingredientes de primeira. Maçãs, canela e... um toque de magia. <span id="clue-click-clue3" class="clue-span">Aquele lobo mau precisava de uma lição por assustar meu gatinho!</span>' },
+                { id: 'playground', name: 'Playground', sortOrder: 8, characterId: null, dialogue: 'Não há nada aqui, exceto um prato de torta vazio e um lobisomem roncando. <span id="clue-click-clue2" class="clue-span">Um cheiro adocicado de lavanda, um conhecido sonífero mágico, paira no ar.</span>' }
+            ],
+            characters: { 'lupicinio': { name: 'Sr. Lupicínio', isSuspect: false }, 'sra_b': { name: 'Sra. B', isSuspect: true } },
+            clues: [
+                { id: 'clue1', name: 'Entrega Especial', description: 'A Sra. B entregou a torta pessoalmente, o que lhe deu a oportunidade de enfeitiçá-la.' },
+                { id: 'clue2', name: 'Cheiro de Sonífero', description: 'O cheiro de sonífero mágico na cena do crime é a prova de que a torta foi encantada.' },
+                { id: 'clue3', name: 'Lição para o Lobo', description: 'A Sra. B confessou que queria dar uma lição no Lobisomem, revelando sua motivação.' }
+            ]
+        }
+    ];
+
+    // --- GAME STATE ---
+    let gameState = {};
+    let currentCase = {};
+    let currentCaseIndex = 0;
+
+    // --- DOM ELEMENTS ---
+    const homeScreen = document.getElementById('home-screen');
+    const startInvestigationButton = document.getElementById('start-investigation-button');
+    const leftPanel = document.getElementById('left-panel');
+    const caseBriefingScreen = document.getElementById('case-briefing-screen');
+    const caseTitle = document.getElementById('case-title');
+    const locationScreen = document.getElementById('location-screen');
+    const solveScreen = document.getElementById('solve-screen');
+    const startButton = document.getElementById('start-button');
+    const locationsList = document.getElementById('locations-list');
+    const inventoryList = document.getElementById('inventory-list');
+    const solveButton = document.getElementById('solve-button');
+    const characterImg = document.getElementById('character-img');
+    const characterName = document.getElementById('character-name');
+    const dialogueText = document.getElementById('dialogue-text');
+    const cluesList = document.getElementById('clues-list');
+    const theorySlots = {
+        opportunity: document.getElementById('slot-opportunity'),
+        motive: document.getElementById('slot-motive'),
+        proof: document.getElementById('slot-proof'),
+    };
+    const accuseButton = document.getElementById('accuse-button');
+    const suspectsModal = document.getElementById('suspects-modal');
+    const suspectsList = document.getElementById('suspects-list');
+    const cancelAccusationButton = document.getElementById('cancel-accusation');
+    const resultModal = document.getElementById('result-modal');
+    const resultTitle = document.getElementById('result-title');
+    const resultMessage = document.getElementById('result-message');
+    const playAgainButton = document.getElementById('play-again-button');
+
+    // --- FUNCTIONS ---
+    function initGame() {
+        // Apenas esconde o painel esquerdo no início
+    }
+    
+    function loadCase(index) {
+        if (index >= CASES_DATABASE.length) {
+            showFinalVictoryScreen();
+            return;
+        }
+
+        currentCase = CASES_DATABASE[index];
+        gameState = {
+            inventory: [],
+            visitedLocations: [],
+            currentLocation: null,
+            theory: { opportunity: null, motive: null, proof: null }
+        };
+        
+        caseTitle.textContent = currentCase.title;
+        
+        caseBriefingScreen.style.display = 'flex';
+        locationScreen.style.display = 'none';
+        solveScreen.style.display = 'none';
+        suspectsModal.classList.add('hidden');
+        resultModal.classList.add('hidden');
+        solveButton.disabled = true;
+
+        renderLocations();
+        renderInventory();
+    }
+
+
+    function startGame() {
+        caseBriefingScreen.style.display = 'none';
+        visitLocation('portaria');
+    }
+
+    function renderLocations() {
+        locationsList.innerHTML = '';
+        const sortedLocations = [...currentCase.locations].sort((a, b) => a.sortOrder - b.sortOrder);
+        sortedLocations.forEach(loc => {
+            const button = document.createElement('button');
+            button.className = 'location-btn w-full text-left bg-purple-800 hover:bg-purple-700 font-bold py-3 px-4 rounded-lg shadow-lg';
+            button.textContent = loc.name;
+            button.onclick = () => visitLocation(loc.id);
+            locationsList.appendChild(button);
+        });
+    }
+    
+    function renderInventory() {
+        inventoryList.innerHTML = '';
+        if (gameState.inventory.length === 0) {
+            inventoryList.innerHTML = `<p class="col-span-3 text-center text-slate-400 text-sm">Nenhuma anotação ainda.</p>`;
+        } else {
+            gameState.inventory.forEach(clueId => {
+                const clue = currentCase.clues.find(c => c.id === clueId);
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'inventory-item bg-purple-600 p-2 rounded-lg text-center cursor-pointer';
+                itemDiv.title = clue.description;
+                itemDiv.innerHTML = `<div class="text-xs font-bold">${clue.name}</div>`;
+                inventoryList.appendChild(itemDiv);
+            });
+        }
+        solveButton.disabled = gameState.inventory.length < currentCase.clues.length;
+    }
+
+    function visitLocation(locationId) {
+        const location = currentCase.locations.find(loc => loc.id === locationId);
+        if (!location) return;
+
+        gameState.currentLocation = locationId;
+        locationScreen.style.display = 'flex';
+        solveScreen.style.display = 'none';
+        
+        const characterId = location.characterId;
+        if (characterId && currentCase.characters[characterId]) {
+            const char = currentCase.characters[characterId];
+            characterImg.src = `https://placehold.co/150x150/1e293b/ffffff?text=${char.name.replace(/\s/g, '+')}`;
+            characterName.textContent = char.name;
+        } else {
+            characterImg.src = 'https://placehold.co/150x150/1e293b/475569?text=Local';
+            characterName.textContent = location.name;
+        }
+        
+        dialogueText.innerHTML = location.dialogue;
+
+        const clueSpans = dialogueText.querySelectorAll('.clue-span');
+        clueSpans.forEach(span => {
+            const clueId = span.id.replace('clue-click-', '');
+            if (gameState.inventory.includes(clueId)) span.classList.add('found');
+            span.addEventListener('click', (e) => {
+                if (!e.target.classList.contains('found')) {
+                    const foundClueId = e.target.id.replace('clue-click-', '');
+                    gameState.inventory.push(foundClueId);
+                    renderInventory();
+                    e.target.classList.add('found');
+                }
+            });
+        });
+    }
+    
+    function showSolveScreen() {
+        locationScreen.style.display = 'none';
+        solveScreen.style.display = 'flex';
+        renderSolveUI();
+    }
+    
+    function renderSolveUI() {
+        cluesList.innerHTML = '';
+        Object.values(theorySlots).forEach(slot => slot.innerHTML = '');
+        accuseButton.disabled = true;
+
+        const availableClues = currentCase.clues.filter(c => !Object.values(gameState.theory).includes(c.id));
+        
+        availableClues.forEach(clueData => {
+            createClueElement(clueData, cluesList);
+        });
+        
+        Object.keys(theorySlots).forEach(slotType => {
+            const clueId = gameState.theory[slotType];
+            if (clueId) {
+                const clueData = currentCase.clues.find(c => c.id === clueId);
+                createClueElement(clueData, theorySlots[slotType]);
+            }
+        });
+
+        Object.values(theorySlots).forEach(slot => {
+            slot.addEventListener('dragover', handleDragOver);
+            slot.addEventListener('dragleave', handleDragLeave);
+            slot.addEventListener('drop', handleDrop);
+        });
+        cluesList.addEventListener('dragover', handleDragOver);
+        cluesList.addEventListener('dragleave', handleDragLeave);
+        cluesList.addEventListener('drop', handleDrop);
+    }
+    
+    function createClueElement(clueData, parentElement) {
+        const clueDiv = document.createElement('div');
+        clueDiv.id = clueData.id;
+        clueDiv.className = 'clue bg-purple-700 p-2 rounded-lg cursor-grab';
+        clueDiv.draggable = true;
+        clueDiv.innerHTML = `<h4 class="font-bold text-sm">${clueData.name}</h4><p class="text-xs text-purple-200 break-words">${clueData.description}</p>`;
+        clueDiv.addEventListener('dragstart', handleDragStart);
+        parentElement.appendChild(clueDiv);
+    }
+    
+    let draggedClueId = null;
+    function handleDragStart(e) {
+        draggedClueId = e.target.id;
+        e.dataTransfer.setData('text/plain', draggedClueId);
+    }
+    function handleDragOver(e) {
+        e.preventDefault();
+        e.currentTarget.classList.add('drag-over');
+    }
+    function handleDragLeave(e) {
+        e.currentTarget.classList.remove('drag-over');
+    }
+    function handleDrop(e) {
+        e.preventDefault();
+        e.currentTarget.classList.remove('drag-over');
+        const clueId = e.dataTransfer.getData('text/plain');
+        const target = e.currentTarget;
+        
+        Object.keys(gameState.theory).forEach(slotType => {
+            if (gameState.theory[slotType] === clueId) gameState.theory[slotType] = null;
+        });
+
+        if (target.classList.contains('theory-slot')) {
+            const slotType = target.dataset.slotType;
+            const oldClueId = gameState.theory[slotType];
+            if (oldClueId) {
+                 const oldClueData = currentCase.clues.find(c => c.id === oldClueId);
+                 createClueElement(oldClueData, cluesList);
+            }
+            gameState.theory[slotType] = clueId;
+        }
+        
+        renderSolveUI();
+        checkTheoryCompletion();
+    }
+    
+    function checkTheoryCompletion(){
+        const {opportunity, motive, proof} = gameState.theory;
+        if(opportunity && motive && proof){
+            accuseButton.disabled = false;
+        } else {
+            accuseButton.disabled = true;
+        }
+    }
+
+    function showSuspectsModal() {
+        suspectsList.innerHTML = '';
+        Object.keys(currentCase.characters).forEach(charId => {
+            const charData = currentCase.characters[charId];
+            if (!charData.isSuspect) return;
+            const suspectDiv = document.createElement('div');
+            suspectDiv.className = 'suspect-choice bg-slate-700 p-3 rounded-lg text-center cursor-pointer';
+            suspectDiv.innerHTML = `<img src="https://placehold.co/150x150/1e293b/ffffff?text=${charData.name.replace(/\s/g, '+')}" class="w-20 h-20 rounded-full mx-auto mb-2"><span class="font-bold">${charData.name}</span>`;
+            suspectDiv.onclick = () => checkAccusation(charId);
+            suspectsList.appendChild(suspectDiv);
+        });
+        suspectsModal.classList.remove('hidden');
+    }
+    
+    function checkAccusation(accusedId) {
+        suspectsModal.classList.add('hidden');
+        const correctTheory = currentCase.theory;
+        const playerTheory = gameState.theory;
+
+        const isTheoryCorrect = correctTheory.opportunity === playerTheory.opportunity &&
+                                correctTheory.motive === playerTheory.motive &&
+                                correctTheory.proof === playerTheory.proof;
+        
+        const isSuspectCorrect = accusedId === currentCase.culprit;
+
+        if (isTheoryCorrect && isSuspectCorrect) {
+            resultTitle.textContent = "Caso Resolvido!";
+            resultTitle.className = "font-creepster text-5xl mb-4 text-green-400";
+            resultMessage.innerHTML = currentCase.solution;
+            playAgainButton.textContent = "Próximo Caso";
+            playAgainButton.onclick = () => {
+                currentCaseIndex++;
+                localStorage.setItem('monsterCaseIndex', currentCaseIndex);
+                loadCase(currentCaseIndex);
+                resultModal.classList.add('hidden');
+            };
+        } else {
+             if (!isTheoryCorrect) {
+                resultTitle.textContent = "Teoria Incorreta!";
+                resultMessage.textContent = `Sua lógica está falha, Zé! As pistas não se conectam dessa maneira. Reavalie como a Oportunidade, a Motivação e a Prova se encaixam.`;
+            } else {
+                const accusedName = currentCase.characters[accusedId].name;
+                resultTitle.textContent = "Suspeito Errado!";
+                resultMessage.textContent = `Sua teoria estava perfeita, mas você acusou o monstro errado! Não foi ${accusedName}.`;
+            }
+            resultTitle.className = "font-creepster text-5xl mb-4 text-red-500";
+            playAgainButton.textContent = "Tentar Novamente";
+            playAgainButton.onclick = () => {
+                loadCase(currentCaseIndex);
+                resultModal.classList.add('hidden');
+            };
+        }
+        resultModal.classList.add('hidden');
+    }
+
+    function showFinalVictoryScreen() {
+        resultModal.classList.remove('hidden');
+        resultTitle.textContent = "Parabéns!";
+        resultTitle.className = "font-creepster text-5xl mb-4 text-yellow-300";
+        resultMessage.innerHTML = "Você resolveu TODOS os mistérios do Condomínio dos Monstros! Você é o melhor porteiro-detetive que já existiu. Zé Chico está orgulhoso!";
+        playAgainButton.textContent = "Jogar de Novo do Começo";
+        playAgainButton.onclick = () => {
+            currentCaseIndex = 0;
+            localStorage.setItem('monsterCaseIndex', currentCaseIndex);
+            loadCase(currentCaseIndex);
+            resultModal.classList.add('hidden');
+        };
+    }
+
+    // --- EVENT LISTENERS ---
+    startInvestigationButton.addEventListener('click', () => {
+        homeScreen.style.display = 'none';
+        leftPanel.style.display = 'flex';
+
+        const savedIndex = localStorage.getItem('monsterCaseIndex');
+        currentCaseIndex = savedIndex ? parseInt(savedIndex, 10) : 0;
+        loadCase(currentCaseIndex);
+    });
+    startButton.addEventListener('click', startGame);
+    solveButton.addEventListener('click', showSolveScreen);
+    accuseButton.addEventListener('click', showSuspectsModal);
+    cancelAccusationButton.addEventListener('click', () => suspectsModal.classList.add('hidden'));
+
+    // --- INITIALIZATION ---
+    initGame();
+});
+</script>
+
+</body>
+</html>
+
