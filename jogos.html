@@ -37,21 +37,6 @@
             overflow-y: auto;
         }
 
-        .back-button {
-            position: absolute;
-            top: 30px;
-            left: 30px;
-            font-size: 1.2em;
-            color: var(--cor-primaria);
-            text-decoration: none;
-            font-weight: 700;
-            transition: transform 0.3s;
-        }
-        
-        .back-button:hover {
-            transform: scale(1.1);
-        }
-            
         body {
             font-family: var(--font-texto);
             background-color: var(--cor-fundo-escuro);
@@ -463,8 +448,7 @@
     </style>
 </head>
 <body>
-<a href="porteiro.html" class="back-button" title="Voltar ao Portal Principal">‹ Voltar</a>  
-  <div class="container">
+    <div class="container">
         <!-- ===== PÁGINA INICIAL ===== -->
         <div id="home" class="home-screen">
             <div class="hero-section">
@@ -480,28 +464,34 @@
             </div>
             
             <div class="main-cards">
-                <a href="jogo-detetive.html" target="_blank" class="card-link" aria-label="Abrir Os Casos do Condomínio">
-                    <img src= especial.jpg alt="Os Casos do Condomínio" class="card-image">
-                    <div class="card-content">
-                        <h3 class="card-title">Os Casos do Condomínio</h3>
-                        <p class="card-description">
-                            Assuma o papel do porteiro Zé Chico e resolva mistérios 
-                            do condomínio dos monstros
-                        </p>
-                    </div>
                 </div>
+                <a href="jogos.html" target="_self" class="card-link" aria-label="Abrir jogos">
+                    <div class="main-card">
+                        <img src= jogos.jpg class="card-image">
+                        <div class="card-content">
+                            <h3 class="card-title">Jogos</h3>
+                            <p class="card-description">
+                                Jogos para que você se sinta dentro das histórias do condomínio dos monstros.
+                            </p>
+                        </div>
+                    </div>
+                </a>
                 
-                 <a href="jogo-porteiro.html" target="_blank" class="card-link" aria-label="Abrir O Jogo do Porteiro">
-                    <img src= jogo.jpg alt="Jogo do Porteiro" class="card-image">
-                    <div class="card-content">
-                        <h3 class="card-title">Jogo do Porteiro</h3>
-                        <p class="card-description">
-                            Trabalhe um turno como porteiro do condomínio dos monstros
-                            e ajude os moradores com o que eles precisarem
-                        </p>
+                 </div>
+                <a href="jogos.html" target="_self" class="card-link" aria-label="Abrir jogos">
+                    <div class="main-card">
+                        <img src= jogos.jpg class="card-image">
+                        <div class="card-content">
+                            <h3 class="card-title">Jogos</h3>
+                            <p class="card-description">
+                                Jogos para que você se sinta dentro das histórias do condomínio dos monstros.
+                            </p>
+                        </div>
                     </div>
+                </a>
+               
                 </div>
-                <a href="jogos.html" target="_blank" class="card-link" aria-label="Abrir jogos">
+                <a href="jogos.html" target="_self" class="card-link" aria-label="Abrir jogos">
                     <div class="main-card">
                         <img src= jogos.jpg class="card-image">
                         <div class="card-content">
@@ -799,4 +789,3 @@
     </script>
 </body>
 </html>
-
