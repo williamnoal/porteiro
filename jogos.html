@@ -133,6 +133,7 @@
             overflow: hidden;
             display: flex;
             flex-direction: column; 
+            height: 100%; /* Garante que todos os cards tenham a mesma altura */
         }
         
         .main-card:hover {
@@ -144,7 +145,7 @@
         .card-link {
             text-decoration: none;
             color: inherit;
-            display: flex;
+            display: flex; /* Faz o link ocupar todo o espaço do card */
         }
 
         .card-image {
@@ -156,6 +157,9 @@
 
         .card-content {
             padding: 1.5rem 2rem 2rem 2rem;
+            flex-grow: 1; /* Faz o conteúdo crescer para preencher o espaço */
+            display: flex;
+            flex-direction: column;
         }
 
         .card-title {
@@ -190,9 +194,10 @@
             transition: var(--transicao);
             box-shadow: var(--sombra);
             z-index: 1000;
-            display: none;
+            display: inline-flex;
             align-items: center;
             gap: 10px;
+            text-decoration: none;
         }
 
         .back-button:hover {
@@ -200,261 +205,35 @@
             transform: scale(1.05);
         }
 
-        .page {
-            display: none;
-            animation: fadeIn 0.5s ease-out;
-            width: 100%;
-            height: 100%;
-            padding: 20px;
-            overflow-y: auto;
-        }
-
-        .page.active {
-            display: flex;
-            flex-direction: column;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .page-header {
-            text-align: center;
-            margin-bottom: 1.5rem;
-            padding-top: 50px;
-        }
-
-        .page-title {
-            font-family: var(--font-titulo);
-            font-size: clamp(2.8rem, 6vw, 4rem);
-            color: var(--cor-texto-claro);
-            margin-bottom: 0.5rem;
-            font-weight: normal;
-            letter-spacing: 2px;
-            text-shadow: 2px 2px 5px rgba(0,0,0,0.4);
-        }
-
-        .page-subtitle {
-            font-size: clamp(1.1rem, 2.5vw, 1.4rem);
-            color: var(--cor-texto-secundario);
-            font-family: var(--font-texto);
-            max-width: 80%;
-            margin: 0 auto;
-        }
-
-        /* ===== ÁLBUM DOS MONSTROS (ESTILO ATUALIZADO) ===== */
-        .album-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            gap: 1.5rem;
-            margin-top: 2rem;
-            padding: 0 1rem;
-            flex-grow: 1;
-        }
-
-        .monstro-card {
-            background: var(--cor-card-escuro);
-            border-radius: var(--border-radius);
-            padding: 1rem;
-            box-shadow: var(--sombra);
-            transition: var(--transicao);
-            cursor: pointer;
-            border: 4px solid var(--cor-texto-secundario);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            aspect-ratio: 7 / 10;
-        }
-
-        .monstro-card:hover {
-            transform: translateY(-10px) scale(1.05) rotate(3deg);
-            box-shadow: var(--sombra-hover);
-            border-color: var(--cor-verde-musgo);
-        }
-        
-        .monstro-number {
-            font-family: var(--font-titulo);
-            font-size: 3.5rem;
-            color: var(--cor-texto-claro);
-            opacity: 0.6;
-            line-height: 1;
-        }
-
-        .monstro-nome {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--cor-texto-claro);
-            margin: 0.5rem 0;
-            font-family: var(--font-texto);
-            line-height: 1.2;
-            flex-grow: 1;
-        }
-
-        .monstro-tipo {
-            color: var(--cor-texto-secundario);
-            font-family: var(--font-texto);
-            font-weight: 500;
-            font-size: 0.9rem;
-        }
-        
-        .card-special {
-             background: linear-gradient(145deg, var(--cor-verde-musgo), #616f50);
-             border-color: var(--cor-texto-claro);
-        }
-        
-        .card-special .monstro-nome {
-            color: var(--cor-texto-claro);
-        }
-
-        /* ===== ATIVIDADES (Original) ===== */
-        .atividades-container {
-            flex-grow: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            padding: 1rem;
-        }
-        
-        .atividades-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            grid-template-rows: repeat(2, 1fr);
-            gap: 1.5rem;
-            width: 100%;
-            max-width: 1600px;
-            height: 100%;
-            max-height: 75vh;
-        }
-
-        .atividade-card {
-            background: var(--cor-card-escuro);
-            border-radius: var(--border-radius);
-            padding: 1.2rem;
-            box-shadow: var(--sombra);
-            transition: var(--transicao);
-            border: 2px solid #2e242d;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            cursor: pointer;
-            text-align: center; 
-        }
-
-        .atividade-card:hover {
-            transform: translateY(-8px);
-            box-shadow: var(--sombra-hover);
-            border-color: var(--cor-laranja-queimado);
-        }
-        .atividade-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem; }
-        .atividade-icon { font-size: 2rem; margin-right: 1rem; }
-        .atividade-numero { font-family: var(--font-titulo); font-size: 2.5rem; color: var(--cor-texto-claro); opacity: 0.5; }
-        .atividade-titulo { font-size: 1.1rem; font-weight: 700; color: var(--cor-texto-claro); margin-bottom: 0.5rem; line-height: 1.2; }
-        .atividade-tipo { background: var(--cor-roxo-livro); color: white; padding: 0.2rem 0.6rem; border-radius: 10px; font-size: 0.7rem; font-weight: 700; margin-bottom: 0.8rem; display: inline-block; }
-        .atividade-descricao { color: var(--cor-texto-secundario); font-family: var(--font-texto); font-size: 0.8rem; line-height: 1.4; flex-grow: 1; margin-bottom: 1rem; }
-        .atividade-footer { border-top: 1px solid #5a4a59; padding-top: 0.5rem; font-size: 0.75rem; color: var(--cor-texto-secundario); font-weight: 500; text-align: center; }
-
-        /* ===== MODAL ===== */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(42, 33, 41, 0.85); z-index: 2000; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(4px); }
-        .modal.active { display: flex; animation: fadeInModal 0.3s ease-out; }
-        @keyframes fadeInModal { from { opacity: 0; } to { opacity: 1; } }
-        
-        .modal-content { 
-            background: var(--cor-card-escuro); 
-            border-radius: var(--border-radius); 
-            border: 3px solid #2e242d; 
-            padding: 2rem 2.5rem; 
-            max-width: 650px; 
-            width: 100%; 
-            max-height: 90vh; 
-            overflow-y: auto; 
-            position: relative; /* Relative position for the pseudo-element */
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5); 
-            animation: slideUp 0.4s ease-out; 
-            overflow: hidden; /* Keep pseudo-element contained */
-            text-align: justify;
-        }
-
-        /* Pseudo-element for the background image */
-        .modal-content::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: var(--modal-bg-image);
-            background-size: cover;
-            background-position: center;
-            opacity: 0.2;
-            z-index: 0; /* Behind the content */
-        }
-
-        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        
-        .modal-close { 
-            position: absolute; 
-            top: 15px; 
-            right: 15px; 
-            background: var(--cor-laranja-queimado); 
-            color: white; 
-            border: 2px solid #2e242d; 
-            border-radius: 50%; 
-            width: 40px; 
-            height: 40px; 
-            font-size: 1.8rem; 
-            font-weight: 700; 
-            line-height: 1; 
-            cursor: pointer; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            transition: var(--transicao); 
-            z-index: 1; /* Ensure it's above the background */
-        }
-        .modal-close:hover { background: var(--cor-roxo-livro); transform: rotate(90deg); }
-        .modal-titulo, .modal-conteudo {
-            position: relative;
-            z-index: 1; /* Ensure content is above the background */
-        }
-        .modal-titulo { font-family: var(--font-titulo); letter-spacing: 1px; color: var(--cor-texto-claro); font-size: 2.8rem; font-weight: normal; margin-bottom: 1.5rem; padding-right: 40px; line-height: 1.1; }
-        .modal-conteudo { color: var(--cor-texto-claro); font-family: var(--font-texto); line-height: 1.7; }
-        .modal-conteudo h4 { color: var(--cor-laranja-queimado); font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.5rem; border-top: 1px solid #5a4a59; padding-top: 1rem; font-size: 1.1rem; }
-        .modal-conteudo ul { list-style-position: inside; padding-left: 10px; }
-        
-        .gemini-feature input, .gemini-feature textarea { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 8px; border: 2px solid var(--cor-roxo-livro); background-color: var(--cor-fundo-escuro); color: var(--cor-texto-claro); font-family: var(--font-texto); }
-        .gemini-feature button { background: var(--cor-verde-musgo); color: white; border: 2px solid #2e242d; border-radius: 20px; padding: 10px 15px; font-family: var(--font-texto); font-weight: 700; cursor: pointer; width: 100%; transition: var(--transicao); }
-        .gemini-feature button:hover { background: var(--cor-laranja-queimado); }
-        #historia-gerada, .conselho-gerado-container { margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.2); border-radius: 8px; min-height: 50px; }
-        .loading-animation { display: block; margin: 1rem auto; width: 30px; height: 30px; border: 3px solid var(--cor-texto-secundario); border-top-color: var(--cor-laranja-queimado); border-radius: 50%; animation: spin 1s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        @media (max-width: 1200px) { .atividades-grid { grid-template-columns: repeat(4, 1fr); } }
-        @media (max-width: 992px) { .atividades-grid { grid-template-columns: repeat(3, 1fr); } }
         @media (max-width: 768px) {
-            html, body { overflow: auto; }
-            .container { height: auto; }
-            .home-screen, .page.active { height: auto; min-height: 100vh; }
-            .hero-section { flex-direction: column; text-align: center; }
-            .hero-text-content { text-align: center; }
-            .hero-subtitle { text-align: center; }
-            .main-cards { grid-template-columns: 1fr; gap: 1.5rem; max-width: 400px; }
-            .atividades-grid { grid-template-columns: 1fr; max-height: none; }
-            .album-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
-            .back-button { top: 15px; left: 15px; padding: 10px 18px; font-size: 0.9rem; }
-            .page-header { padding-top: 70px; }
+            .main-cards { 
+                grid-template-columns: 1fr; 
+                gap: 1.5rem; 
+                max-width: 400px; 
+            }
+            .back-button { 
+                top: 15px; 
+                left: 15px; 
+                padding: 10px 18px; 
+                font-size: 0.9rem; 
+            }
+            .page-header { 
+                padding-top: 70px; 
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <a href="porteiro.html" class="back-button" aria-label="Voltar à página inicial">
+            ← Voltar
+        </a>
         <!-- ===== PÁGINA INICIAL ===== -->
         <div id="home" class="home-screen">
             <div class="hero-section">
-                <img src= capa.png alt="Ilustração do Porteiro e do Condomínio dos Monstros" class="hero-main-image">
+                <img src="capa.png" alt="Ilustração do Porteiro e do Condomínio dos Monstros" class="hero-main-image">
                 <div class="hero-text-content">
-                    <img src= cabecalho.png alt="O Porteiro do Condomínio dos Monstros" class="hero-title-image">
+                    <img src="cabecalho.png" alt="O Porteiro do Condomínio dos Monstros" class="hero-title-image">
                     <h2 class="hero-subtitle">Uma aventura de Alexandre de Castro Gomes</h2>
                     <p class="hero-description">
                         Explore um mundo onde monstros são vizinhos e a lição mais importante 
@@ -464,10 +243,9 @@
             </div>
             
             <div class="main-cards">
-                </div>
                 <a href="jogos.html" target="_self" class="card-link" aria-label="Abrir jogos">
                     <div class="main-card">
-                        <img src= jogos.jpg class="card-image">
+                        <img src="jogos.jpg" class="card-image" alt="Imagem representando jogos">
                         <div class="card-content">
                             <h3 class="card-title">Jogos</h3>
                             <p class="card-description">
@@ -477,10 +255,9 @@
                     </div>
                 </a>
                 
-                 </div>
                 <a href="jogos.html" target="_self" class="card-link" aria-label="Abrir jogos">
                     <div class="main-card">
-                        <img src= jogos.jpg class="card-image">
+                        <img src="jogos.jpg" class="card-image" alt="Imagem representando jogos">
                         <div class="card-content">
                             <h3 class="card-title">Jogos</h3>
                             <p class="card-description">
@@ -490,10 +267,9 @@
                     </div>
                 </a>
                
-                </div>
                 <a href="jogos.html" target="_self" class="card-link" aria-label="Abrir jogos">
                     <div class="main-card">
-                        <img src= jogos.jpg class="card-image">
+                        <img src="jogos.jpg" class="card-image" alt="Imagem representando jogos">
                         <div class="card-content">
                             <h3 class="card-title">Jogos</h3>
                             <p class="card-description">
@@ -504,288 +280,7 @@
                 </a>
             </div>
         </div>
-
-        <!-- ===== BOTÃO VOLTAR ===== -->
-        <button class="back-button" id="btnVoltar" onclick="voltarInicio()" aria-label="Voltar à página inicial">
-            ← Início
-        </button>
-
-        <!-- ===== PÁGINA ÁLBUM DOS MONSTROS (ATUALIZADA) ===== -->
-        <div id="monstros" class="page">
-            <header class="page-header">
-                <h1 class="page-title">Álbum dos Monstros</h1>
-                <p class="page-subtitle">Uma coleção de figurinhas dos personagens de "O Porteiro do Condomínio dos Monstros". Clique em um card para ver os detalhes!</p>
-            </header>
-            
-            <main>
-                <div class="album-grid" id="album-grid">
-                    <!-- Cards serão inseridos pelo JavaScript -->
-                </div>
-            </main>
-        </div>
-
-        <!-- ===== PÁGINA ATIVIDADES (ORIGINAL) ===== -->
-        <div id="atividades" class="page">
-            <header class="page-header">
-                <h1 class="page-title">🎯 Atividades Monstruosas</h1>
-                <p class="page-subtitle">Explore os temas do livro e desenvolva novas habilidades!</p>
-            </header>
-            
-            <div class="atividades-container">
-                <div class="atividades-grid">
-                    <div class="atividade-card" onclick="abrirModalAtividade('debate')" tabindex="0">
-                        <div>
-                            <div class="atividade-header"><span class="atividade-icon">⚖️</span><span class="atividade-numero">1</span></div>
-                            <h3 class="atividade-titulo">O Grande Debate do Condomínio</h3>
-                            <span class="atividade-tipo">Argumentação Oral</span>
-                            <p class="atividade-descricao">A vizinhança está assustada! Em grupos, defendam ou oponham-se à permanência dos monstros no prédio. Usem argumentos do livro e da vida real sobre convivência e preconceito.</p>
-                        </div>
-                        <div class="atividade-footer">BNCC: EF67LP15</div>
-                    </div>
-                    <div class="atividade-card" onclick="abrirModalAtividade('carta-vlad')" tabindex="0">
-                        <div>
-                            <div class="atividade-header"><span class="atividade-icon">📜</span><span class="atividade-numero">2</span></div>
-                            <h3 class="atividade-titulo">Carta Aberta do Conde Vlad</h3>
-                            <span class="atividade-tipo">Argumentação Escrita</span>
-                            <p class="atividade-descricao">Escreva uma carta, como se fosse o Conde Vlad, para o jornal do bairro. O objetivo é acalmar os humanos, explicar que os monstros são bons vizinhos e argumentar pelo direito à moradia.</p>
-                        </div>
-                        <div class="atividade-footer">BNCC: EF67LP17</div>
-                    </div>
-                    <div class="atividade-card" onclick="abrirModalAtividade('diario-ze')" tabindex="0">
-                        <div>
-                            <div class="atividade-header"><span class="atividade-icon">✍️</span><span class="atividade-numero">3</span></div>
-                            <h3 class="atividade-titulo">O Diário de Zé Chico</h3>
-                            <span class="atividade-tipo">Produção Escrita Criativa</span>
-                            <p class="atividade-descricao">Imagine que você é Zé Chico. Escreva em seu diário sobre a noite em que descobriu a verdade, descrevendo seus sentimentos: o susto inicial, a surpresa e a aceitação final dos novos amigos.</p>
-                        </div>
-                        <div class="atividade-footer">BNCC: EF67LP30</div>
-                    </div>
-                    <div class="atividade-card" onclick="abrirModalAtividade('hq-torta')" tabindex="0">
-                        <div>
-                            <div class="atividade-header"><span class="atividade-icon">🎨</span><span class="atividade-numero">4</span></div>
-                            <h3 class="atividade-titulo">A Torta em Quadrinhos</h3>
-                            <span class="atividade-tipo">Linguagem Visual e Escrita</span>
-                            <p class="atividade-descricao">Crie uma pequena história em quadrinhos (3 a 4 quadros) mostrando o que aconteceu com Lupicínio depois que ele comeu a torta da Sra. B. Use balões de fala e pensamento!</p>
-                        </div>
-                        <div class="atividade-footer">BNCC: EF69LP44</div>
-                    </div>
-                    <div class="atividade-card" onclick="abrirModalAtividade('noticia')" tabindex="0">
-                        <div>
-                            <div class="atividade-header"><span class="atividade-icon">📰</span><span class="atividade-numero">5</span></div>
-                            <h3 class="atividade-titulo">Notícia Urgente!</h3>
-                            <span class="atividade-tipo">Produção Jornalística</span>
-                            <p class="atividade-descricao">Escreva uma notícia para o "Jornal do Bairro" sobre a "criatura gigante" que invadiu um condomínio atrás de uma torta. Lembre-se de criar um título, um lide e narrar os fatos de forma objetiva.</p>
-                        </div>
-                        <div class="atividade-footer">BNCC: EF67LP14</div>
-                    </div>
-                    <div class="atividade-card" onclick="abrirModalAtividade('entrevista-saci')" tabindex="0">
-                        <div>
-                            <div class="atividade-header"><span class="atividade-icon">🎙️</span><span class="atividade-numero">6</span></div>
-                            <h3 class="atividade-titulo">Entrevista com o Saci</h3>
-                            <span class="atividade-tipo">Produção Oral e Roteirização</span>
-                            <p class="atividade-descricao">Em dupla, crie um roteiro de entrevista com o Saci. Um será o repórter e o outro, o Saci. Perguntem sobre suas travessuras, como é viver num prédio com uma perna só e sobre a amizade com os outros.</p>
-                        </div>
-                        <div class="atividade-footer">BNCC: EF67LP14</div>
-                    </div>
-                    <div class="atividade-card" onclick="abrirModalAtividade('regulamento')" tabindex="0">
-                        <div>
-                            <div class="atividade-header"><span class="atividade-icon">📜</span><span class="atividade-numero">7</span></div>
-                            <h3 class="atividade-titulo">Regulamento do Condomínio</h3>
-                            <span class="atividade-tipo">Texto Instrucional</span>
-                            <p class="atividade-descricao">Crie 5 regras para o "Manual de Convivência" do condomínio, pensando nas necessidades especiais dos moradores (Ex: "Não deixar o caixão do Conde Vlad no meio do corredor").</p>
-                        </div>
-                        <div class="atividade-footer">BNCC: EF69LP23</div>
-                    </div>
-                    <div class="atividade-card" onclick="abrirModalAtividade('comparacao')" tabindex="0">
-                        <div>
-                            <div class="atividade-header"><span class="atividade-icon">↔️</span><span class="atividade-numero">8</span></div>
-                            <h3 class="atividade-titulo">Monstro vs. Monstro</h3>
-                            <span class="atividade-tipo">Análise Comparativa</span>
-                            <p class="atividade-descricao">Escolha dois moradores e compare-os! Quais são suas semelhanças e diferenças? O que podemos aprender com eles sobre convivência?</p>
-                        </div>
-                        <div class="atividade-footer">BNCC: EF69LP47</div>
-                    </div>
-                    <div class="atividade-card" onclick="abrirModalAtividade('podcast')" tabindex="0">
-                        <div>
-                            <div class="atividade-header"><span class="atividade-icon">🗣️</span><span class="atividade-numero">9</span></div>
-                            <h3 class="atividade-titulo">Podcast: "Monstros são gente boa?"</h3>
-                            <span class="atividade-tipo">Roteiro e Oralidade</span>
-                            <p class="atividade-descricao">Em grupo, planeje um episódio de podcast. O tema é "Não julgue pela aparência". Usem a história de Zé Chico e dos monstros para criar um roteiro e discutir o assunto de forma descontraída.</p>
-                        </div>
-                        <div class="atividade-footer">BNCC: EF69LP10</div>
-                    </div>
-                    <div class="atividade-card" onclick="abrirModalAtividade('reclamacao-sra-b')" tabindex="0">
-                        <div>
-                            <div class="atividade-header"><span class="atividade-icon">😠</span><span class="atividade-numero">10</span></div>
-                            <h3 class="atividade-titulo">A Reclamação da Sra. B</h3>
-                            <span class="atividade-tipo">Escrita Argumentativa (Reclamação)</span>
-                            <p class="atividade-descricao">Antes de fazer a torta "mágica", a Sra. B tentou resolver o problema dos gatos de forma formal. Escreva a carta de reclamação que ela enviou ao síndico (Conde Vlad) sobre o comportamento de Lupicínio.</p>
-                        </div>
-                        <div class="atividade-footer">BNCC: EF67LP16</div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
-
-    <!-- ===== MODAL ===== -->
-    <div id="modal" class="modal" role="dialog" aria-labelledby="modal-titulo" aria-hidden="true">
-        <div class="modal-content">
-            <button class="modal-close" onclick="fecharModal()" aria-label="Fechar modal">×</button>
-            <h2 id="modal-titulo" class="modal-titulo"></h2>
-            <div id="modal-conteudo" class="modal-conteudo"></div>
-        </div>
-    </div>
-
-    <script>
-        // Dados para o modal das atividades (permanece o mesmo)
-        const dadosAtividades = {
-            'debate': { titulo: '⚖️ O Grande Debate do Condomínio', conteudo: `<h4>Objetivo:</h4><p>Desenvolver a argumentação oral e o respeito a opiniões diferentes.</p><h4>Passo a Passo:</h4><ol><li>Dividam a turma em 3 grupos: "Pró-Monstros", "Contra-Monstros" e "Mediadores".</li><li>O grupo "Pró" deve listar 3 motivos pelos quais os monstros devem ficar (Ex: pagam aluguel, são respeitosos, direito à moradia).</li><li>O grupo "Contra" deve listar 3 preocupações dos humanos (Ex: barulhos estranhos, segurança, aparência assustadora).</li><li>Os "Mediadores" definem o tempo de fala (2 min por argumento) e garantem que todos se respeitem.</li><li>Iniciem o debate! Cada grupo apresenta seus argumentos e tenta convencer o outro.</li></ol><h4>Dica:</h4><p>Lembrem-se da principal mensagem do livro: "Não se deve julgar ninguém pela aparência".</p>` },
-            'carta-vlad': { titulo: '📜 Carta Aberta do Conde Vlad', conteudo: `<h4>Objetivo:</h4><p>Praticar a escrita argumentativa em um formato de carta aberta.</p><h4>Estrutura da Carta:</h4><ol><li><strong>Título:</strong> "Uma Mensagem do Condomínio da Rua Mortinho da Silva".</li><li><strong>Saudação:</strong> "Caros vizinhos e amigos do bairro,".</li><li><strong>Introdução:</strong> Apresente-se como o síndico e explique o motivo da carta (esclarecer os boatos).</li><li><strong>Argumentos:</strong> Dê 2 ou 3 exemplos de como os monstros são bons vizinhos (Frank é um cientista quieto, a Sra. B faz tortas deliciosas, etc.). Use a frase do livro: "Não é porque somos monstros que temos de ser maus também."</li><li><strong>Conclusão:</strong> Faça um convite para um "chá da tarde monstruoso" para que todos possam se conhecer.</li><li><strong>Despedida:</strong> "Atenciosamente, Conde Vlad e moradores."</li></ol>` },
-            'diario-ze': { titulo: '✍️ O Diário de Zé Chico', conteudo: `<h4>Objetivo:</h4><p>Exercitar a escrita criativa e a descrição de emoções.</p><h4>Como começar:</h4><p>Comece com "Querido diário," e a data do acontecimento.</p><h4>Roteiro de Ideias:</h4><ul><li><strong>O Susto:</strong> Descreva o momento em que o Bicho-Papão apareceu. Como seu coração ficou? O que você pensou?</li><li><strong>A Corrida:</strong> Narre a corrida pelo playground para salvar a torta. O que você viu? (Morcegos, a Mula sem Cabeça...).</li><li><strong>A Revelação:</strong> Conte como o Conde Vlad acalmou a situação e os outros monstros apareceram. Qual foi sua reação ao ver todos?</li><li><strong>A Reflexão:</strong> Termine o texto explicando por que decidiu ficar. Use a ideia de que, apesar de tudo, eles o trataram bem e que a aparência não é tudo.</li></ul>` },
-            'hq-torta': { titulo: '🎨 A Torta em Quadrinhos', conteudo: `<h4>Objetivo:</h4><p>Contar uma história usando linguagem verbal e não verbal.</p><h4>Passo a Passo:</h4><ol><li>Divida uma folha em 4 quadros.</li><li><strong>Quadro 1:</strong> Desenhe Lupicínio olhando para a torta com olhos brilhando. Balão de pensamento: "Que cheiro bom!".</li><li><strong>Quadro 2:</strong> Desenhe ele dando uma mordida gigante na torta. Use uma onomatopeia como "NHAC!".</li><li><strong>Quadro 3:</strong> Desenhe Lupicínio caindo no chão, dormindo, com "Zzz" saindo de sua boca.</li><li><strong>Quadro 4:</strong> Desenhe a Sra. B com as mãos na cintura e uma cara de "missão cumprida". Balão de fala: "Isso é para você aprender a não mexer com meu gatinho!".</li></ol><h4>Dica:</h4><p>Capriche nas expressões faciais dos personagens!</p>` },
-            'noticia': { titulo: '📰 Notícia Urgente!', conteudo: `<h4>Objetivo:</h4><p>Praticar a estrutura do gênero textual notícia.</p><h4>Estrutura da Notícia:</h4><ul><li><strong>Manchete (Título):</strong> Crie um título chamativo. Ex: "CONFUSÃO GULOSA: Criatura Misteriosa Invade Condomínio por Torta de Maçã!".</li><li><strong>Lide (Primeiro Parágrafo):</strong> Responda às perguntas principais: O quê? (Uma perseguição) Quem? (Um porteiro e uma criatura) Onde? (No Condomínio da Rua Mortinho da Silva) Quando? (Na noite de ontem) Por quê? (Por causa de uma torta).</li><li><strong>Corpo da Notícia:</strong> Dê mais detalhes. Conte sobre a corrida, os outros moradores que apareceram e como a situação foi resolvida. Seja objetivo, como um jornalista de verdade!</li></ul>` },
-            'entrevista-saci': { titulo: '🎙️ Entrevista com o Saci', conteudo: `<h4>Objetivo:</h4><p>Criar um roteiro de entrevista e praticar a oralidade.</p><h4>Estrutura do Roteiro:</h4><ol><li><strong>Apresentação:</strong> O repórter se apresenta e introduz o entrevistado: "Estamos aqui hoje com o morador mais travesso do condomínio, o Saci!".</li><li><strong>Perguntas (sugestões):</strong><ul><li>"Saci, é verdade que foi você que colocou a tachinha na cadeira do porteiro? Por quê?"</li><li>"Como é usar um redemoinho de vento para se locomover?"</li><li>"Qual a sua travessura favorita?"</li><li>"Como é a amizade entre os monstros do prédio?"</li></ul></li><li><strong>Encerramento:</strong> O repórter agradece a participação do Saci e se despede do público.</li></ol><h4>Dica:</h4><p>O aluno que for o Saci deve responder de forma engraçada e brincalhona!</p>` },
-            'regulamento': { titulo: '📜 Regulamento do Condomínio', conteudo: `<h4>Objetivo:</h4><p>Produzir um texto instrucional com regras claras e justificativas.</p><h4>Como Fazer:</h4><p>Pense nos problemas que poderiam acontecer no condomínio e crie regras usando verbos no modo imperativo (faça, não deixe, mantenha).</p><h4>Exemplos de Regras:</h4><ul><li><strong>Regra 1:</strong> Não prender o botão do elevador. (Para o Saci)</li><li><strong>Regra 2:</strong> Manter os bebedouros de pássaros abastecidos apenas com o lanche do Sr. Vlad.</li><li><strong>Regra 3:</strong> Não perseguir os animais de estimação dos outros moradores. (Para o Lupicínio)</li><li><strong>Regra 4:</strong> Estacionar vassouras e carros estranhos somente na vaga designada.</li><li><strong>Regra 5:</strong> Festas com caldeirões devem ser comunicadas ao síndico com 24h de antecedência. (Para a Sra. B)</li></ul>` },
-            'comparacao': {titulo: '↔️ Monstro vs. Monstro', conteudo: `<h4>Objetivo:</h4><p>Desenvolver o pensamento crítico e a habilidade de comparar e contrastar personagens.</p><h4>Passo a Passo:</h4><ol><li>Escolha uma dupla de personagens do livro (Ex: Conde Vlad e Saci, ou Sra. B e Lupicínio).</li><li>Em uma folha, desenhe um "Diagrama de Venn" (dois círculos que se cruzam no meio).</li><li>No círculo da esquerda, liste as características únicas do primeiro monstro.</li><li>No círculo da direita, liste as características únicas do segundo monstro.</li><li>Na área onde os círculos se cruzam, escreva o que eles têm em comum.</li></ol><h4>Reflexão:</h4><p>Apesar de todas as diferenças, por que eles conseguem ser bons vizinhos e amigos?</p>`},
-            'podcast': { titulo: '🗣️ Podcast: "Monstros são gente boa?"', conteudo: `<h4>Objetivo:</h4><p>Planejar um roteiro e praticar a discussão oral de um tema.</p><h4>Estrutura do Episódio:</h4><ol><li><strong>Introdução (30 seg):</strong> Música de abertura e apresentação do tema pelo locutor. "Olá, bem-vindos ao MonstroCast! Hoje vamos discutir: devemos ter medo do que é diferente?".</li><li><strong>Bloco 1 (2 min):</strong> Contar resumidamente a história de Zé Chico, que tinha medo, mas depois virou amigo dos monstros.</li><li><strong>Bloco 2 (2 min):</strong> Discutir exemplos do dia a dia. Já julgamos alguém pela aparência? O que podemos fazer para evitar isso?</li><li><strong>Encerramento (30 seg):</strong> O locutor resume a conversa, passa a mensagem principal do livro e se despede.</li></ol><h4>Dica:</h4><p>Gravem o áudio usando o celular! Um aluno pode ser o "editor de som" e adicionar uma música de fundo.</p>` },
-            'reclamacao-sra-b': { titulo: '😠 A Reclamação da Sra. B', conteudo: `<h4>Objetivo:</h4><p>Praticar a escrita de uma carta de reclamação, usando uma linguagem formal e argumentos claros.</p><h4>Estrutura da Carta:</h4><ol><li><strong>Data e Local:</strong> "Rua Mortinho da Silva, nº 13. Data de hoje."</li><li><strong>Destinatário:</strong> "Ao síndico do Condomínio dos Monstros, Sr. Conde Vlad".</li><li><strong>Assunto:</strong> "Reclamação sobre perseguição de animal de estimação".</li><li><strong>Corpo do Texto:</strong> Explique o problema de forma educada. "Prezado síndico, escrevo para registrar minha insatisfação com o morador do apartamento 302, Sr. Lupicínio. Em diversas ocasiões, ele tem perseguido meu gato pelo playground, causando estresse ao animal."</li><li><strong>Pedido:</strong> "Solicito que uma conversa seja realizada com o referido morador para que essa situação não se repita."</li><li><strong>Despedida:</strong> "Agradeço a atenção. Atenciosamente, Sra. B, apto. 401."</li></ol>` },
-        };
-
-        // Dados para o modal dos monstros (ATUALIZADO E COMPLETO)
-        const dadosMonstros = {
-            'ze-chico': { id: '001', grupo: 'principais', nome: 'ZÉ CHICO', tipo: 'O Protagonista', titulo: 'ZÉ CHICO', imagem: 'zechico.jpg', conteudo: `<p>Ex-vigia de cemitério, agora porteiro do edifício da Rua Mortinho da Silva, nº 13. Tataraneto de Igor, antigo empregado do Conde Vlad na Romênia. Aprende que não devemos julgar as pessoas pela aparência. Adora futebol e lê jornal de esportes.</p><h4>Curiosidade:</h4><p>Sempre cai nas pegadinhas dos ratos brancos!</p>` },
-            'mula-sem-cabeca': { id: '002', grupo: 'moradores', nome: 'MORADORA DO 101', tipo: 'A Mula sem Cabeça', titulo: 'A Mula sem Cabeça', imagem: 'mula.jpg', conteudo: `<p>Mulher muito recatada que tem "motivos para não arrumar namorado". Volta da igreja chorando e seu apartamento sempre tem cheiro de queimado. À noite se transforma na criatura folclórica que galopa pelo pátio.</p><h4>Conexão:</h4><p>Representa a lenda da mulher amaldiçoada por relacionamento proibido!</p>` },
-            'esqueleto': { id: '003', grupo: 'moradores', nome: 'O ESQUELETO', tipo: 'O Arqueólogo Magricela', titulo: 'O ESQUELETO', imagem: 'esqueleto.jpg', conteudo: `<p>Cientista muito magro que sempre usa casaco com gorro e calças compridas. Deixa ossos pela lixeira e às vezes derruba maxilares pelo caminho. Estuda fósseis e artefatos antigos.</p><h4>Curiosidade:</h4><p>É tão distraído que nem percebe quando perde partes do próprio corpo!</p>` },
-            'saci': { id: '004', grupo: 'moradores', nome: 'O SACI', tipo: 'O Travesso Folclórico', titulo: 'O SACI', imagem: 'saci.jpg', conteudo: `<p>Anão de gorro escarlate que adora fazer pegadinhas! Prende o elevador com fita adesiva e coloca tachinhas na cadeira do porteiro. Tem um carro que parece um redemoinho de vento.</p><h4>Travessuras favoritas:</h4><p>Elevador preso e cadeira com tachinha. "Não pude resistir!" é sua frase preferida!</p>` },
-            'fantasma': { id: '005', grupo: 'moradores', nome: 'O FANTASMA', tipo: 'O Morador Pálido', titulo: 'O FANTASMA', imagem: 'fantasma.jpg', conteudo: `<p>Aparece do nada, como se atravessasse paredes. Flutua escada acima em vez de caminhar normalmente. Ficou aliviado quando não precisou mais esconder sua verdadeira identidade dos outros moradores.</p><h4>Habilidade especial:</h4><p>Materialização e desmaterialização!</p>` },
-            'lupicinio': { id: '006', grupo: 'moradores', nome: 'LUPICÍNIO LOBO', tipo: 'O Lobisomem Aniversariante', titulo: 'LUPICÍNIO LOBO', imagem: 'lupi.jpg', conteudo: `<p>Sujeito barbudo e peludo que não gosta de gatos. Persegue o gato preto da Sra. B. pelo playground. Durante a história, ganha uma torta de aniversário especial que o faz dormir por seis meses!</p><h4>Lição aprendida:</h4><p>Não perseguir o gatinho da bruxa!</p>` },
-            'sra-b': { id: '007', grupo: 'moradores', nome: 'SRA. B.', tipo: 'A Bruxa Gentil', titulo: 'SRA. B.', imagem: 'bruxa.jpg', conteudo: `<p>Velhinha de chapéu negro e bicudo, dona de um gato preto. Faz tortas deliciosas e recebe amigas para trocar receitas. Guarda quinze vassouras na garagem. É muito carinhosa com todos.</p><h4>Especialidade:</h4><p>Tortas com "efeitos especiais" para ensinar boas maneiras!</p>` },
-            'alienigena': { id: '008', grupo: 'moradores', nome: 'O ALIENÍGENA', tipo: 'O Observador Espacial', titulo: 'O ALIENÍGENA', imagem: 'alien.jpg', conteudo: `<p>Ser de cabeça grande e verde com dois olhos vermelhos. Sempre observa tudo de sua janela no quarto andar. Tem um carro que lembra um disco voador. Discreto mas sempre atento a tudo que acontece no condomínio.</p><h4>Missão:</h4><p>Estudar o comportamento dos terranos!</p>` },
-            'conde-vlad': { id: '009', grupo: 'moradores', nome: 'CONDE VLAD', tipo: 'O Vampiro Vegetariano', titulo: 'CONDE VLAD', imagem: 'vlad.jpg', conteudo: `<p>Homem distinto, pálido, com sotaque europeu. É o síndico do prédio e quem contratou Zé Chico. Só bebe sangue de galinha, nunca de humanos. Recebe um caixão super moderno pelos correios.</p><h4>Conexão especial:</h4><p>Antigo patrão do tataravô de Zé Chico!</p>` },
-            'seu-frank': { id: '010', grupo: 'moradores', nome: 'SEU FRANK', tipo: 'O Cientista Frankenstein', titulo: 'SEU FRANK', imagem: 'frank.jpg', conteudo: `<p>Cientista grandão com cicatrizes horríveis. Precisa do coração de boi para suas experiências no laboratório. Tem um carro que parece montado em casa com peças diferentes.</p><h4>Assistentes secretos:</h4><p>Os dois ratos brancos que fazem travessuras!</p>` },
-            'ratos-brancos': { id: '011', grupo: 'secundarios', nome: 'OS RATOS BRANCOS', tipo: 'As Cobaias Travessas', titulo: 'OS RATOS BRANCOS', imagem: 'ratos.jpg', conteudo: `<p>Ratos de laboratório super inteligentes que escaparam dos experimentos de Frank. Roubam pedaços do jornal de Zé Chico (sempre a página do seu time!) e preparam armadilhas com ratoeiras.</p><h4>Travessura favorita:</h4><p>Fazer o porteiro sentar na própria ratoeira!</p>` },
-            'bicho-papao': { id: '012', grupo: 'secundarios', nome: 'O BICHO-PAPÃO', tipo: 'O Monstro Guloso', titulo: 'O BICHO-PAPÃO', imagem: 'bichopapao.jpg', conteudo: `<p>Criatura grande, peluda, com bocarra cheia de dentes. É completamente louco por doces, especialmente tortas! Foi ele quem estragou o plano de apresentação gradual dos monstros por não conseguir resistir ao cheiro da torta.</p><h4>Fraqueza:</h4><p>Qualquer coisa doce!</p>` },
-            'gato-preto': { id: '013', grupo: 'secundarios', nome: 'O GATO PRETO', tipo: 'O Pet da Bruxa', titulo: 'O GATO PRETO', imagem: 'gato.jpeg', conteudo: `<p>Gato esperto da Sra. B. que vive sendo perseguido pelo Lobisomem pelo playground. É protegido pela magia de sua dona bruxa.</p><h4>Proteção especial:</h4><p>Sua dona tem métodos únicos para defender seus pets!</p>` },
-            'morcegos': { id: '014', grupo: 'secundarios', nome: 'OS MORCEGOS', tipo: 'Os Ajudantes do Vampiro', titulo: 'OS MORCEGOS', imagem: 'morcego.jpg', conteudo: `<p>Pequenos morcegos que ajudam o Conde Vlad, sugando o molho pardo da galinha dos bebedouros. Um deles pode se transformar no próprio Conde.</p><h4>Habilidade especial:</h4><p>Transformação vampíresca!</p>` },
-            'antonio': { id: '015', grupo: 'amigos', nome: 'ANTÔNIO', tipo: 'O Faxineiro Curioso', titulo: 'ANTÔNIO', imagem: 'antonio.jpg', conteudo: `<p>Faxineiro de um prédio próximo, muito curioso sobre o novo trabalho do amigo Zé Chico. Fica boquiaberto com as histórias do condomínio dos monstros.</p><h4>Característica:</h4><p>Limpa o bigode com guardanapo quando fica nervoso!</p>` },
-            'ferreirinha': { id: '016', grupo: 'amigos', nome: 'FERREIRINHA', tipo: 'O Padeiro Desconfiado', titulo: 'FERREIRINHA', imagem: 'ferreirinha.jpg', conteudo: `<p>Empregado da padaria local, amigo de Zé Chico que não gostaria de estar no lugar dele trabalhando com "esquisitões". Aprende sobre não julgar pela aparência.</p><h4>Opinião inicial:</h4><p>"Não gostaria de estar na sua pele!"</p>` },
-            'carteiro': { id: '017', grupo: 'outros', nome: 'O CARTEiro', tipo: 'O Entregador Corajoso', titulo: 'O CARTEIRO', imagem: 'carteiro.jpeg', conteudo: `<p>Funcionário dos Correios que entrega encomendas no prédio, incluindo o caixão super moderno do Conde Vlad. Não se assusta com as coisas estranhas que entrega.</p><h4>Entrega especial:</h4><p>Caixão com ar-condicionado!</p>` },
-            'bruxas-amigas': { id: '018', grupo: 'outros', nome: 'AS BRUXAS AMIGAS', tipo: 'As Colegas de Receitas', titulo: 'AS BRUXAS AMIGAS', imagem: 'bruxas.jpg', conteudo: `<p>Amigas educadas da Sra. B. que visitam o apartamento 401 carregando panelões para trocar receitas de bruxas. Uma delas queria dar uma maçã para Zé Chico.</p><h4>Atividade favorita:</h4><p>Encontros gastronômicos sobrenaturais!</p>` },
-            'igor': { id: '019', grupo: 'outros', nome: 'IGOR (Mencionado)', tipo: 'O Ancestral Leal', titulo: 'IGOR', imagem: 'igor.jpg', conteudo: `<p>Tataravô de Zé Chico que foi empregado fiel do Conde Vlad por vários anos na Romênia. Depois se aposentou e mudou para o Ceará.</p><h4>Legado:</h4><p>Sua lealdade garantiu emprego para o tataraneto!</p>` },
-            'mensagem-final': { id: '020', grupo: 'mensagem', nome: 'MENSAGEM DA HISTÓRIA', tipo: 'A Grande Lição', titulo: 'A MENSAGEM DA HISTÓRIA', imagem: 'especial.jpg', conteudo: `<p class="quote">"Não julgue os outros pela aparência. Não é porque somos monstros que temos de ser maus também."</p><p style="text-align: right; font-weight: bold; margin-top: -10px;">- Conde Vlad</p><hr style="border-color: #5a4a59; margin: 1rem 0;"><p>A obra ensina sobre tolerância, aceitação das diferenças e que as aparências podem enganar. Todos os "monstros" do condomínio são, na verdade, seres gentis e acolhedores que apenas queriam um porteiro que os compreendesse!</p>` }
-        };
-
-        // Funções de Navegação
-        function mostrarPagina(pagina) {
-            document.getElementById('home').style.display = 'none';
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(pagina).classList.add('active');
-            document.getElementById('btnVoltar').style.display = 'flex';
-        }
-
-        function voltarInicio() {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById('home').style.display = 'flex';
-            document.getElementById('btnVoltar').style.display = 'none';
-        }
-
-        // Funções do Modal
-        function abrirModal(monstroId) {
-            const monstro = dadosMonstros[monstroId];
-            if (monstro) {
-                const modalContent = document.querySelector('.modal-content');
-                if (monstro.imagem) {
-                    modalContent.style.setProperty('--modal-bg-image', `url('${monstro.imagem}')`);
-                } else {
-                    modalContent.style.removeProperty('--modal-bg-image');
-                }
-                document.getElementById('modal-titulo').innerHTML = monstro.titulo;
-                document.getElementById('modal-conteudo').innerHTML = monstro.conteudo;
-                document.getElementById('modal').classList.add('active');
-                document.body.style.overflow = 'hidden';
-            }
-        }
-        
-        function abrirModalAtividade(atividadeId) {
-            const atividade = dadosAtividades[atividadeId];
-            if (atividade) {
-                document.getElementById('modal-titulo').innerHTML = atividade.titulo;
-                document.getElementById('modal-conteudo').innerHTML = atividade.conteudo;
-                document.getElementById('modal').classList.add('active');
-                document.body.style.overflow = 'hidden';
-            }
-        }
-
-        function fecharModal() {
-            const modal = document.getElementById('modal');
-            modal.classList.remove('active');
-            document.body.style.overflow = 'auto';
-            // Limpa a imagem de fundo para evitar que ela pisque na próxima abertura
-            modal.querySelector('.modal-content').style.removeProperty('--modal-bg-image');
-        }
-
-        // Função de Geração de História com IA (sem alterações)
-        async function gerarHistoriaMonstro() {
-            const monsterName = document.getElementById('monster-name').value;
-            const monsterDesc = document.getElementById('monster-desc').value;
-            const loadingDiv = document.getElementById('loading-story');
-            const historiaP = document.getElementById('texto-historia');
-            if (!monsterName || !monsterDesc) { historiaP.textContent = "Por favor, preencha o nome e a descrição do seu monstro primeiro."; return; }
-            loadingDiv.innerHTML = '<div class="loading-animation"></div><p>Gerando sua história monstruosa...</p>';
-            loadingDiv.style.display = 'block';
-            historiaP.textContent = '';
-            const userQuery = `Escreva uma pequena e divertida história infantil em português (cerca de 150 palavras) sobre o primeiro dia de um novo monstro no 'Condomínio dos Monstros'. O nome do monstro é '${monsterName}' e ele é assim: '${monsterDesc}'. A história deve mostrar ele conhecendo o porteiro Zé Chico e interagindo de forma engraçada com outros moradores como o Conde Vlad ou o Saci. Mantenha o tom leve e amigável do livro original.`;
-            const apiKey = "";
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
-            const payload = { contents: [{ parts: [{ text: userQuery }] }] };
-            let success = false, attempt = 0, maxRetries = 3;
-            while (attempt < maxRetries && !success) {
-                try {
-                    const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                    const result = await response.json();
-                    const candidate = result.candidates?.[0];
-                    if (candidate && candidate.content?.parts?.[0]?.text) {
-                        historiaP.innerHTML = candidate.content.parts[0].text.replace(/\n/g, '<br>');
-                        success = true;
-                    } else { throw new Error(result.error?.message || "Resposta da API inválida."); }
-                } catch (error) {
-                    console.error(`Attempt ${attempt + 1} failed:`, error);
-                    attempt++;
-                    if (attempt >= maxRetries) historiaP.textContent = "Desculpe, não foi possível gerar a história no momento. Tente novamente mais tarde.";
-                    else await new Promise(res => setTimeout(res, 1000 * Math.pow(2, attempt)));
-                }
-            }
-            loadingDiv.style.display = 'none';
-        }
-        
-        // Event Listeners
-        document.addEventListener('DOMContentLoaded', function() {
-            // Lógica para fechar o modal
-            document.addEventListener('keydown', e => { if (e.key === 'Escape') fecharModal(); });
-            document.getElementById('modal').addEventListener('click', function(e) { if (e.target === this) fecharModal(); });
-
-            // LÓGICA PARA CRIAR OS CARDS DO ÁLBUM DINAMICAMENTE
-            const albumGrid = document.getElementById('album-grid');
-            const sortedMonstros = Object.entries(dadosMonstros).sort(([, a], [, b]) => a.id.localeCompare(b.id));
-
-            for (const [monstroId, monstro] of sortedMonstros) {
-                const card = document.createElement('div');
-                card.className = 'monstro-card';
-                card.setAttribute('onclick', `abrirModal('${monstroId}')`);
-                card.setAttribute('tabindex', '0');
-                card.setAttribute('role', 'button');
-                card.setAttribute('aria-label', `Ver informações de ${monstro.nome}`);
-                if (monstro.grupo === 'mensagem') {
-                    card.classList.add('card-special');
-                }
-                card.innerHTML = `
-                    <div class="monstro-number">${monstro.id}</div>
-                `;
-                albumGrid.appendChild(card);
-            }
-        });
-    </script>
 </body>
 </html>
+
