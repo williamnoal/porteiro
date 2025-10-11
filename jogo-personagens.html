@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quem é o Morador? - O Porteiro do Condomínio dos Monstros</title>
+    <title>Jogo 1: Quem é o Morador? - O Porteiro do Condomínio dos Monstros</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Quicksand:wght@400;500;700&display=swap" rel="stylesheet">
@@ -280,9 +280,11 @@
 
         <div class="game-area">
             <div class="column" id="descricoes-container">
-                </div>
+                <!-- Descrições serão inseridas pelo JavaScript -->
+            </div>
             <div class="column" id="monstros-container">
-                </div>
+                <!-- Monstros serão inseridos pelo JavaScript -->
+            </div>
         </div>
     </main>
 
@@ -301,7 +303,7 @@
         const endGameModal = document.getElementById('end-game-modal');
         const restartBtn = document.getElementById('restart-btn');
 
-        // Dados dos Personagens com base no livro
+        // Dados dos Personagens com base no livro e com os nomes dos arquivos de imagem
         const personagens = [
             { id: 'vlad', nome: 'Conde Vlad', descricao: 'Um homem muito distinto, pálido e com um leve sotaque europeu, que na verdade é um vampiro e síndico do prédio.', imagem: 'vlad2.jpg' },
             { id: 'frank', nome: 'Seu Frank', descricao: 'Um cientista grandão com cicatrizes horríveis que mora no 502 e precisa de um coração de boi para seus experimentos.', imagem: 'frank2.jpg' },
@@ -348,10 +350,8 @@
                 card.classList.add('monstro-card');
                 card.dataset.id = personagem.id;
                 
-                // Use placeholders para as imagens, já que não temos os arquivos.
-                // Em um projeto real, você colocaria o caminho para cada imagem.
                 card.innerHTML = `
-                    <img src="placeholder.png" alt="Ilustração do ${personagem.nome}" class="monstro-image">
+                    <img src="${personagem.imagem}" alt="Ilustração do ${personagem.nome}" class="monstro-image">
                     <div class="monstro-placeholder">
                         <p class="monstro-placeholder-text">Quem sou eu?</p>
                     </div>
