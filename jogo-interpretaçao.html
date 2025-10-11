@@ -445,16 +445,21 @@
         function showScore(){
             gameScreen.style.display = 'none';
             scoreScreen.style.display = 'flex';
-            scoreText.innerText = `Você acertou ${score} de ${questions.length} perguntas.`;
             
-            if(score === questions.length) {
-                scoreTitle.innerText = "Monstruoso!";
-            } else if (score >= Math.ceil(questions.length * 0.7)) {
-                scoreTitle.innerText = "Fantástico!";
-            } else if (score >= questions.length / 2) {
-                scoreTitle.innerText = "Muito Bem!";
-            } else {
+            const finalScoreText = `Você acertou ${score} de ${questions.length} perguntas.`;
+
+            if (score === 15) {
+                scoreTitle.innerText = "Monstruosamente Perfeito!";
+                scoreText.innerHTML = `${finalScoreText}<br><br>Você conhece a história tão bem quanto o próprio Zé Chico. Parabéns, você é o porteiro honorário do condomínio!`;
+            } else if (score >= 10 && score <= 14) {
+                scoreTitle.innerText = "Excelente!";
+                scoreText.innerHTML = `${finalScoreText}<br><br>Você prestou muita atenção aos detalhes da história. Falta pouco para você se tornar um especialista no Condomínio dos Monstros!`;
+            } else if (score >= 5 && score <= 9) {
+                scoreTitle.innerText = "Quase lá!";
+                scoreText.innerHTML = `${finalScoreText}<br><br>Você já conhece bem o condomínio, mas alguns detalhes escaparam. Uma releitura da aventura pode ajudar a lembrar de tudo!`;
+            } else { // 0 a 4 acertos
                 scoreTitle.innerText = "Tente de Novo!";
+                scoreText.innerHTML = `${finalScoreText}<br><br>Que tal ler a história mais uma vez? Zé Chico e seus amigos monstros têm muitos segredos para lhe contar. Tente de novo!`;
             }
         }
 
@@ -464,6 +469,5 @@
     </script>
 </body>
 </html>
-
 
 
