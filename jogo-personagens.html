@@ -390,7 +390,7 @@
                     zone.classList.remove('drop-hover');
                     if (zone.classList.contains('correct')) return;
 
-                    const draggingId = document.querySelector('.dragging').id.split('-')[1];
+                    const draggingId = document.querySelector('.dragging').id.replace('desc-', '');
                     const dropzoneId = zone.dataset.id;
                     const draggedElement = document.querySelector('.dragging');
 
@@ -435,3 +435,5 @@
     </script>
 </body>
 </html>
+
+
