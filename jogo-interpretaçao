@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Você se lembra da história? - O Porteiro do Condomínio dos Monstros</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Quicksand:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cor-fundo-escuro: #3A2E39;
+            --cor-card-escuro: #4A3C49;
+            --cor-roxo-livro: #8C5E89;
+            --cor-laranja-queimado: #D88A58;
+            --cor-verde-musgo: #7A8B67;
+            --cor-verde-sucesso: #8bc34a;
+            --cor-vermelho-erro: #e91e63;
+            --cor-texto-claro: #EAE6E1;
+            --cor-texto-secundario: #bcaeb9;
+            
+            --font-titulo: 'Creepster', cursive;
+            --font-texto: 'Quicksand', sans-serif;
+            
+            --sombra: 5px 5px 15px rgba(0, 0, 0, 0.4);
+            --border-radius: 12px;
+            --transicao: all 0.3s ease-in-out;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            height: 100%;
+        }
+
+        body {
+            font-family: var(--font-texto);
+            background-color: var(--cor-fundo-escuro);
+            background-image: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 20px 20px;
+            color: var(--cor-texto-claro);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .page-header {
+            width: 100%;
+            padding: 1rem;
+            background-color: var(--cor-fundo-escuro);
+            text-align: center;
+            z-index: 10;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            flex-shrink: 0;
+        }
+
+        .page-title {
+            font-family: var(--font-titulo);
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            color: var(--cor-laranja-queimado);
+            font-weight: normal;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.4);
+        }
+
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            padding: 20px;
+            overflow: hidden;
+        }
+        
+        .quiz-container {
+            width: 100%;
+            max-width: 800px;
+            background: var(--cor-card-escuro);
+            border-radius: var(--border-radius);
+            box-shadow: var(--sombra);
+            padding: 1.5rem 2.5rem;
+            display: flex;
+            flex-direction: column;
+            max-height: calc(100vh - 120px);
+        }
+
+        .quiz-header {
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 10px;
+            background-color: var(--cor-fundo-escuro);
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+
+        #progress-bar {
+            width: 0%;
+            height: 100%;
+            background-color: var(--cor-laranja-queimado);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        #progress-text {
+            font-size: 0.9rem;
+            color: var(--cor-texto-secundario);
+            font-weight: 700;
+        }
+        
+        #question-area {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            overflow-y: hidden; /* Changed */
+            margin: 1rem 0;
+        }
+        
+        #question-area::-webkit-scrollbar { display: none; }
+
+
+        #image-container {
+            width: 100%;
+            max-width: 350px;
+            margin: 0 auto 1rem auto;
+            aspect-ratio: 16 / 9;
+            background-color: var(--cor-fundo-escuro);
+            border-radius: var(--border-radius);
+            display: none; /* Hidden by default */
+            justify-content: center;
+            align-items: center;
+            border: 2px solid var(--cor-roxo-livro);
+            overflow: hidden;
+        }
+
+        #question-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        #question-text {
+            font-size: clamp(1.2rem, 3vw, 1.6rem);
+            font-weight: 700;
+            text-align: center;
+            line-height: 1.4;
+            margin-bottom: 1rem;
+        }
+
+        #options-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.6rem;
+        }
+
+        .option-btn {
+            width: 100%;
+            background: var(--cor-fundo-escuro);
+            border: 2px solid var(--cor-roxo-livro);
+            border-radius: var(--border-radius);
+            padding: 0.8rem;
+            color: var(--cor-texto-claro);
+            font-family: var(--font-texto);
+            font-size: 1rem;
+            font-weight: 500;
+            text-align: left;
+            cursor: pointer;
+            transition: var(--transicao);
+        }
+
+        .option-btn:hover:not(:disabled) {
+            background-color: var(--cor-roxo-livro);
+        }
+
+        .option-btn:disabled { cursor: not-allowed; }
+        .option-btn.correct { background-color: var(--cor-verde-sucesso); border-color: var(--cor-verde-sucesso); color: #fff; }
+        .option-btn.incorrect { background-color: var(--cor-vermelho-erro); border-color: var(--cor-vermelho-erro); color: #fff; }
+        
+        #score-screen {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            text-align: center;
+        }
+
+        #score-title { font-family: var(--font-titulo); font-size: 4rem; color: var(--cor-laranja-queimado); }
+        #score-text { font-size: 1.5rem; margin: 1rem 0 2.5rem 0; }
+        #restart-btn {
+            background: var(--cor-verde-musgo);
+            color: white;
+            border: 2px solid #2e242d;
+            border-radius: 50px;
+            padding: 12px 30px;
+            font-family: var(--font-texto);
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: var(--transicao);
+            box-shadow: var(--sombra);
+        }
+        #restart-btn:hover { background: var(--cor-laranja-queimado); transform: scale(1.05); }
+
+        @media (max-width: 768px) {
+            body { overflow: auto; height: auto; }
+            .page-header { position: static; }
+            .main-content { padding: 0; }
+            .quiz-container { height: auto; min-height: calc(100vh - 80px); max-height: none; padding: 1.5rem; border-radius: 0; }
+        }
+    </style>
+</head>
+<body>
+    <header class="page-header">
+        <h1 class="page-title">Você se lembra da história?</h1>
+    </header>
+
+    <main class="main-content">
+        <div class="quiz-container" id="game-screen">
+            <div class="quiz-header">
+                <div class="progress-bar-container">
+                    <div id="progress-bar"></div>
+                </div>
+                <p id="progress-text"></p>
+            </div>
+
+            <div id="question-area">
+                <div id="image-container">
+                    <img id="question-image" src="" alt="Imagem da pergunta">
+                </div>
+                <div id="question-container">
+                    <h2 id="question-text">Carregando pergunta...</h2>
+                </div>
+                <div id="options-container">
+                    <!-- Opções serão inseridas pelo JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <div class="quiz-container" id="score-screen">
+            <h2 id="score-title">Fim de Jogo!</h2>
+            <p id="score-text">Você acertou X de Y perguntas.</p>
+            <button id="restart-btn">Jogar Novamente</button>
+        </div>
+    </main>
+
+    <script>
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+        const gameScreen = document.getElementById('game-screen');
+        const scoreScreen = document.getElementById('score-screen');
+        const scoreTitle = document.getElementById('score-title');
+        const scoreText = document.getElementById('score-text');
+        const restartBtn = document.getElementById('restart-btn');
+        const imageContainer = document.getElementById('image-container');
+        const questionImage = document.getElementById('question-image');
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        const questions = [
+            {
+                question: "Qual era o emprego de Zé Chico antes de se tornar porteiro do condomínio?",
+                options: ["Faxineiro de um prédio", "Empregado da padaria", "Vigia de cemitério", "Carteiro"],
+                answer: "Vigia de cemitério",
+                image: "cemiterio.jpg"
+            },
+            {
+                question: "Por que o Conde Vlad decidiu contratar Zé Chico?",
+                options: ["Porque Zé Chico não tinha medo de monstros.", "Porque seu tataravô, Igor, foi um empregado leal do Conde.", "Porque ele era o único candidato para a vaga.", "Porque ele precisava de alguém para regar as plantas."],
+                answer: "Porque seu tataravô, Igor, foi um empregado leal do Conde.",
+                image: "https://placehold.co/400x225/8C5E89/EAE6E1?text=Contrato"
+            },
+            {
+                question: "Qual foi a primeira tarefa estranha que Zé Chico recebeu do Conde Vlad?",
+                options: ["Comprar um coração de boi.", "Encher os bebedouros de pássaros com sangue de galinha.", "Polir um caixão de plástico.", "Comprar uma dúzia de vassouras."],
+                answer: "Encher os bebedouros de pássaros com sangue de galinha.",
+                image: "https://placehold.co/400x225/e91e63/EAE6E1?text=Sangue"
+            },
+            {
+                question: "Quem é o morador do 201, que Zé Chico achava ser um arqueólogo?",
+                options: ["O Fantasma", "O Esqueleto", "O Saci", "Seu Frank"],
+                answer: "O Esqueleto",
+                image: "https://placehold.co/400x225/EAE6E1/3A2E39?text=Osso"
+            },
+            {
+                question: "Qual monstro é completamente louco por doces e causou a grande perseguição pela torta?",
+                options: ["Seu Frank", "Lupicínio Lobo", "O Bicho-Papão", "O Conde Vlad"],
+                answer: "O Bicho-Papão",
+                image: "https://placehold.co/400x225/D88A58/3A2E39?text=Torta!"
+            },
+            {
+                question: "O que o Saci fez para pregar uma peça no porteiro Zé Chico?",
+                options: ["Escondeu seu jornal.", "Colocou uma tachinha na sua cadeira.", "Desligou a luz da portaria.", "Roubou sua torta."],
+                answer: "Colocou uma tachinha na sua cadeira.",
+                image: "https://placehold.co/400x225/7A8B67/EAE6E1?text=Pegadinha"
+            },
+            {
+                question: "O que era a enorme encomenda que o carteiro entregou para o Conde Vlad?",
+                options: ["Um sofá novo.", "Uma estátua da Transilvânia.", "Um caixão novo e moderno.", "Uma geladeira para guardar sangue."],
+                answer: "Um caixão novo e moderno.",
+                image: "https://placehold.co/400x225/4A3C49/bcaeb9?text=Caixote"
+            },
+            {
+                question: "Qual o segredo da moradora recatada do apartamento 101?",
+                options: ["Ela era uma bruxa disfarçada.", "Ela era uma cantora de ópera.", "Ela era a Mula sem Cabeça.", "Ela era uma fantasma."],
+                answer: "Ela era a Mula sem Cabeça.",
+                image: "https://placehold.co/400x225/D88A58/FFFFFF?text=Fogo"
+            },
+            {
+                question: "Por que a Sra. B (a Bruxa) deu uma torta 'especial' para Lupicínio, o Lobisomem?",
+                options: ["Porque era seu aniversário e ela gostava muito dele.", "Para ele aprender a não perseguir o gato dela.", "Porque ele pediu a receita.", "Para testar uma nova poção mágica."],
+                answer: "Para ele aprender a não perseguir o gato dela.",
+                image: "https://placehold.co/400x225/7A8B67/FFFFFF?text=Gato+Preto"
+            },
+            {
+                question: "Quem eram os 'monstrinhos' que roubaram o jornal do Zé Chico e armaram uma ratoeira para ele no final?",
+                options: ["Dois morcegos", "Os filhos do Saci", "Dois ratos brancos", "As amigas da Sra. B."],
+                answer: "Dois ratos brancos",
+                image: "https://placehold.co/400x225/bcaeb9/3A2E39?text=Ratos"
+            },
+            {
+                question: "Zé Chico viu alguns pássaros bebendo nos bebedouros do playground. O que eles eram na verdade?",
+                options: ["Pombos gigantes", "Pequenos dragões", "Corvos falantes", "Morcegos"],
+                answer: "Morcegos",
+                image: "https://placehold.co/400x225/4A3C49/FFFFFF?text=Morcego"
+            },
+            {
+                question: "Qual morador tinha um carro que parecia um disco-voador?",
+                options: ["O Conde Vlad", "O Alienígena", "Seu Frank", "O Saci"],
+                answer: "O Alienígena",
+                image: "https://placehold.co/400x225/8bc34a/3A2E39?text=OVNI"
+            },
+            {
+                question: "O que Zé Chico pensou quando viu as amigas da Sra. B. chegando com panelões?",
+                options: ["Que elas iam fazer uma festa barulhenta.", "Que elas iam trocar receitas de vovós.", "Que elas iam fazer uma poção mágica.", "Que elas iam cozinhar para o condomínio todo."],
+                answer: "Que elas iam trocar receitas de vovós.",
+                image: "https://placehold.co/400x225/8C5E89/FFFFFF?text=Caldeir%C3%A3o"
+            },
+            {
+                question: "Apesar do susto, por que Zé Chico decidiu continuar no emprego de porteiro?",
+                options: ["Porque os monstros prometeram não assustá-lo mais.", "Porque ele não tinha outro lugar para ir.", "Porque o salário era bom e ele queria saber mais sobre seu tataravô.", "Porque ele queria aprender a fazer poções com a Sra. B."],
+                answer: "Porque o salário era bom e ele queria saber mais sobre seu tataravô.",
+                image: "https://placehold.co/400x225/bcaeb9/4A3C49?text=Dinheiro"
+            },
+            {
+                question: "Qual é a principal lição da história, dita pelo Conde Vlad?",
+                options: ["Trate bem seu porteiro.", "Cuidado com o que você come.", "Não se deve julgar ninguém pela aparência.", "Monstros são perigosos."],
+                answer: "Não se deve julgar ninguém pela aparência.",
+                image: "https://placehold.co/400x225/EAE6E1/3A2E39?text=Amizade"
+            }
+        ];
+
+        function startGame() {
+            currentQuestionIndex = 0;
+            score = 0;
+            scoreScreen.style.display = 'none';
+            gameScreen.style.display = 'flex';
+            showQuestion();
+        }
+
+        function showQuestion() {
+            resetState();
+            let currentQuestion = questions[currentQuestionIndex];
+
+            // Image display logic
+            if (currentQuestion.image) {
+                questionImage.src = currentQuestion.image;
+                questionImage.alt = `Ilustração para a pergunta sobre ${currentQuestion.question}`;
+                imageContainer.style.display = 'flex';
+            } else {
+                imageContainer.style.display = 'none';
+            }
+
+            questionText.innerText = currentQuestion.question;
+
+            let shuffledOptions = [...currentQuestion.options].sort(() => Math.random() - 0.5);
+
+            shuffledOptions.forEach(option => {
+                const button = document.createElement('button');
+                button.innerText = option;
+                button.classList.add('option-btn');
+                button.addEventListener('click', selectAnswer);
+                optionsContainer.appendChild(button);
+            });
+
+            updateProgress();
+        }
+        
+        function resetState() {
+            while (optionsContainer.firstChild) {
+                optionsContainer.removeChild(optionsContainer.firstChild);
+            }
+        }
+        
+        function selectAnswer(e) {
+            const selectedBtn = e.target;
+            const isCorrect = selectedBtn.innerText === questions[currentQuestionIndex].answer;
+
+            if (isCorrect) {
+                selectedBtn.classList.add('correct');
+                score++;
+            } else {
+                selectedBtn.classList.add('incorrect');
+            }
+
+            Array.from(optionsContainer.children).forEach(button => {
+                if (button.innerText === questions[currentQuestionIndex].answer) {
+                    button.classList.add('correct');
+                }
+                button.disabled = true;
+            });
+            
+            setTimeout(() => {
+                currentQuestionIndex++;
+                if (currentQuestionIndex < questions.length) {
+                    showQuestion();
+                } else {
+                    showScore();
+                }
+            }, 2000);
+        }
+
+        function updateProgress() {
+            const progressPercentage = ((currentQuestionIndex + 1) / questions.length) * 100;
+            progressBar.style.width = `${progressPercentage}%`;
+            progressText.innerText = `Pergunta ${currentQuestionIndex + 1} de ${questions.length}`;
+        }
+        
+        function showScore(){
+            gameScreen.style.display = 'none';
+            scoreScreen.style.display = 'flex';
+            scoreText.innerText = `Você acertou ${score} de ${questions.length} perguntas.`;
+            
+            if(score === questions.length) {
+                scoreTitle.innerText = "Monstruoso!";
+            } else if (score >= Math.ceil(questions.length * 0.7)) {
+                scoreTitle.innerText = "Fantástico!";
+            } else if (score >= questions.length / 2) {
+                scoreTitle.innerText = "Muito Bem!";
+            } else {
+                scoreTitle.innerText = "Tente de Novo!";
+            }
+        }
+
+        restartBtn.addEventListener('click', startGame);
+
+        startGame();
+    </script>
+</body>
+</html>
+
+
+
